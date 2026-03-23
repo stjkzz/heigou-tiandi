@@ -40,13 +40,18 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 2px;
         }
         
         .logo-icon {
             font-size: 32px;
+        }
+        
+        .logo-text {
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 3px;
+            color: #444;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         
         /* 主容器 */
@@ -251,27 +256,26 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            font-size: 15px;
+            background: #1a1a1a;
+            color: #333;
+            border: 1px solid #333;
+            width: 36px;
+            height: 36px;
+            font-size: 13px;
             font-weight: 600;
-            border-radius: 50px;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(224, 122, 95, 0.4);
             transition: all 0.3s ease;
+            z-index: 100;
             display: flex;
             align-items: center;
-            gap: 10px;
-            z-index: 100;
-            letter-spacing: 0.5px;
+            justify-content: center;
         }
         
         .upload-trigger-btn:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(224, 122, 95, 0.5);
+            background: #252525;
+            border-color: #444;
+            color: #555;
         }
         
         /* 弹窗 */
@@ -470,7 +474,7 @@
     <header>
         <div class="logo">
             <span class="logo-icon">🐕‍🦺</span>
-            <span>黑狗天地</span>
+            <span class="logo-text">黑狗天地</span>
         </div>
     </header>
 
@@ -540,9 +544,7 @@
         </div>
     </div>
 
-    <button class="upload-trigger-btn" onclick="openModal()">
-        <span>📤</span> 上传文件
-    </button>
+    <button class="upload-trigger-btn" onclick="openModal()" title="上传文件">U</button>
 
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
