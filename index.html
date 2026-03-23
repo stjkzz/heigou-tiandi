@@ -98,6 +98,25 @@
             box-shadow: 0 8px 30px rgba(0,0,0,0.2);
             border: 3px solid #8D6E63;
             min-height: 400px;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        .file-list-container {
+            overflow-y: auto;
+            flex: 1;
+            max-height: 450px;
+        }
+        .file-list-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .file-list-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .file-list-container::-webkit-scrollbar-thumb {
+            background: #8D6E63;
+            border-radius: 4px;
         }
         .column-header {
             display: flex;
@@ -130,11 +149,34 @@
             margin-bottom: 10px;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
         }
         .file-item:hover {
             transform: translateX(3px);
             border-color: #8D6E63;
             box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+        .file-item:hover .delete-btn {
+            display: block;
+        }
+        .delete-btn {
+            display: none;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            line-height: 24px;
+            text-align: center;
+        }
+        .delete-btn:hover {
+            background: #d32f2f;
         }
         .file-name {
             font-size: 14px;
@@ -342,7 +384,9 @@
                     <span class="column-title">高一试卷</span>
                     <span class="column-count" id="count-gaoyi-shijuan">0</span>
                 </div>
-                <ul class="file-list" id="list-gaoyi-shijuan"></ul>
+                <div class="file-list-container">
+                    <ul class="file-list" id="list-gaoyi-shijuan"></ul>
+                </div>
                 <div class="empty-state" id="empty-gaoyi-shijuan">
                     <div>🐓</div>
                     <p>暂无高一试卷</p>
@@ -354,7 +398,9 @@
                     <span class="column-title">高二试卷</span>
                     <span class="column-count" id="count-gaoer-shijuan">0</span>
                 </div>
-                <ul class="file-list" id="list-gaoer-shijuan"></ul>
+                <div class="file-list-container">
+                    <ul class="file-list" id="list-gaoer-shijuan"></ul>
+                </div>
                 <div class="empty-state" id="empty-gaoer-shijuan">
                     <div>🐓</div>
                     <p>暂无高二试卷</p>
@@ -366,7 +412,9 @@
                     <span class="column-title">高三试卷</span>
                     <span class="column-count" id="count-gaosan-shijuan">0</span>
                 </div>
-                <ul class="file-list" id="list-gaosan-shijuan"></ul>
+                <div class="file-list-container">
+                    <ul class="file-list" id="list-gaosan-shijuan"></ul>
+                </div>
                 <div class="empty-state" id="empty-gaosan-shijuan">
                     <div>🐓</div>
                     <p>暂无高三试卷</p>
@@ -378,7 +426,9 @@
                     <span class="column-title">心得</span>
                     <span class="column-count" id="count-xinde">0</span>
                 </div>
-                <ul class="file-list" id="list-xinde"></ul>
+                <div class="file-list-container">
+                    <ul class="file-list" id="list-xinde"></ul>
+                </div>
                 <div class="empty-state" id="empty-xinde">
                     <div>🐓</div>
                     <p>暂无心得很</p>
@@ -596,9 +646,7 @@
                 { key: 'gaoyi-shijuan', title: '高一试卷' },
                 { key: 'gaoer-shijuan', title: '高二试卷' },
                 { key: 'gaosan-shijuan', title: '高三试卷' },
-                { key: 'gaoyi-xinde', title: '高一' },
-                { key: 'gaoer-xinde', title: '高二' },
-                { key: 'gaosan-xinde', title: '高三' }
+                { key: 'xinde', title: '心得' }
             ];
 
             categories.forEach(cat => {
@@ -616,15 +664,45 @@
                     } else {
                         emptyEl.style.display = 'none';
                         listEl.innerHTML = catFiles.map(file => `
-                            <li class="file-item" onclick="downloadFile('${file.cosUrl}', '${file.name}')">
-                                <div class="file-name">${escapeHtml(file.name)}</div>
-                                <div style="font-size: 11px; color: #8D6E63;">${file.size} · ${file.date}</div>
-                                <span class="file-type-badge badge-${file.type === '试卷' ? 'shijuan' : 'xinde'}">${file.type}</span>
+                            <li class="file-item">
+                                <button class="delete-btn" onclick="event.stopPropagation(); deleteFile('${file.cosKey}', '${escapeHtml(file.name)}')">×</button>
+                                <div class="file-name" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${escapeHtml(file.name)}</div>
+                                <div style="font-size: 11px; color: #8D6E63;" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${file.size} · ${file.date}</div>
+                                <span class="file-type-badge badge-${file.type === '试卷' ? 'shijuan' : 'xinde'}" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${file.type}</span>
                             </li>
                         `).join('');
                     }
                 }
             });
+        }
+
+        async function deleteFile(key, name) {
+            // 先输入密码
+            const password = prompt('请输入删除密码：');
+            if (!password) {
+                return; // 用户取消
+            }
+            
+            if (!confirm(`确定要删除文件 "${name}" 吗？`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/delete?key=${encodeURIComponent(key)}&password=${encodeURIComponent(password)}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('删除成功！', 'success');
+                    await loadFiles();
+                    renderAllLists();
+                } else {
+                    showToast('删除失败：' + data.error, 'error');
+                }
+            } catch (error) {
+                showToast('删除失败：' + error.message, 'error');
+            }
         }
 
         function downloadFile(url, filename) {

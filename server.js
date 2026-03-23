@@ -35,16 +35,24 @@ app.get('/api/files', async (req, res) => {
             if (parts.length < 3) return null;
             
             // 正确处理中文文件名
-            const fileName = decodeURIComponent(parts[parts.length - 1]);
+            const rawFileName = decodeURIComponent(parts[parts.length - 1]);
+            const fileName = rawFileName.replace(/^\d+_/, '');
+            const grade = parts[0] === 'gaoyi' ? '高一' : parts[0] === 'gaoer' ? '高二' : '高三';
+            const type = parts[1] === 'xinde' ? '心得' : '试卷';
+            
+            // 心得统一归类到 xinde，文件名前加年级
+            const category = type === '心得' ? 'xinde' : parts[0] + '-' + parts[1];
+            const displayName = type === '心得' ? `[${grade}] ${fileName}` : fileName;
+            
             return {
-                name: fileName.replace(/^\d+_/, ''),
+                name: displayName,
                 cosKey: item.Key,
                 cosUrl: `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodeURIComponent(item.Key)}`,
-                category: parts[0] + '-' + parts[1],
+                category: category,
                 size: formatFileSize(item.Size),
                 date: new Date(item.LastModified).toLocaleDateString('zh-CN'),
-                grade: parts[0] === 'gaoyi' ? '高一' : parts[0] === 'gaoer' ? '高二' : '高三',
-                type: parts[1] === 'xinde' ? '心得' : '试卷'
+                grade: grade,
+                type: type
             };
         }).filter(f => f !== null);
         
@@ -92,6 +100,30 @@ app.get('/api/download', async (req, res) => {
         const url = `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodeURIComponent(key)}`;
         res.json({ success: true, url });
     } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// 删除文件（需要密码验证）
+app.delete('/api/delete', async (req, res) => {
+    try {
+        const { key, password } = req.query;
+        
+        // 验证密码（从环境变量读取）
+        const correctPassword = process.env.DELETE_PASSWORD || 'admin123';
+        if (password !== correctPassword) {
+            return res.status(403).json({ success: false, error: '密码错误' });
+        }
+        
+        await cos.deleteObject({
+            Bucket: BUCKET,
+            Region: REGION,
+            Key: key
+        });
+        
+        res.json({ success: true, message: '删除成功' });
+    } catch (error) {
+        console.error('删除失败:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
