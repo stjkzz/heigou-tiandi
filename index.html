@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>黑狗天地 - 云端版</title>
-    <script src="https://cdn.jsdelivr.net/npm/cos-js-sdk-v5/dist/cos-js-sdk-v5.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -58,46 +57,6 @@
             max-width: 1400px;
             margin: 0 auto;
             padding: 30px 20px;
-        }
-        .config-panel {
-            background: rgba(255, 248, 225, 0.95);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px auto;
-            max-width: 600px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border: 2px solid #8D6E63;
-        }
-        .config-panel h3 {
-            color: #5D4037;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .config-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 2px solid #8D6E63;
-            border-radius: 8px;
-            font-size: 14px;
-            background: #FFF3E0;
-        }
-        .config-btn {
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(180deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .config-btn:hover { opacity: 0.9; }
-        .config-hint {
-            font-size: 12px;
-            color: #8D6E63;
-            margin-top: 10px;
-            text-align: center;
         }
         .hero-section {
             background: rgba(255, 248, 225, 0.95);
@@ -370,24 +329,13 @@
     </header>
 
     <div class="container">
-        <!-- 配置面板 -->
-        <div class="config-panel" id="configPanel">
-            <h3>🔧 腾讯云COS配置</h3>
-            <input type="text" class="config-input" id="secretId" placeholder="SecretId">
-            <input type="password" class="config-input" id="secretKey" placeholder="SecretKey">
-            <input type="text" class="config-input" id="bucket" placeholder="Bucket (如: heigou-files-1234567890)">
-            <input type="text" class="config-input" id="region" placeholder="Region (如: ap-guangzhou)">
-            <button class="config-btn" onclick="saveConfig()">保存配置</button>
-            <p class="config-hint">配置信息仅保存在本地浏览器中，不会上传到服务器</p>
-        </div>
-
-        <section class="hero-section" id="mainContent" style="display: none;">
+        <section class="hero-section">
             <div class="black-dog-img">🐕‍🦺</div>
             <h2 class="welcome-text">欢迎来到黑狗天地云端版！</h2>
             <p>文件存储在腾讯云，多设备同步</p>
         </section>
 
-        <div class="content-grid" id="contentGrid" style="display: none;">
+        <div class="content-grid">
             <div class="column">
                 <div class="column-header">
                     <span class="column-icon">📖</span>
@@ -439,7 +387,7 @@
         </div>
     </div>
 
-    <button class="upload-trigger-btn" id="uploadBtn" onclick="openModal()" style="display: none;">
+    <button class="upload-trigger-btn" onclick="openModal()">
         <span>📤</span> 上传文件
     </button>
 
@@ -495,50 +443,11 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // 配置管理
-        let COS_CONFIG = null;
-        let cos = null;
-        
-        function loadConfig() {
-            const saved = localStorage.getItem('heigou_cos_config');
-            if (saved) {
-                COS_CONFIG = JSON.parse(saved);
-                document.getElementById('secretId').value = COS_CONFIG.SecretId || '';
-                document.getElementById('secretKey').value = COS_CONFIG.SecretKey || '';
-                document.getElementById('bucket').value = COS_CONFIG.Bucket || '';
-                document.getElementById('region').value = COS_CONFIG.Region || '';
-                initCOS();
-                return true;
-            }
-            return false;
-        }
-        
-        function saveConfig() {
-            const secretId = document.getElementById('secretId').value.trim();
-            const secretKey = document.getElementById('secretKey').value.trim();
-            const bucket = document.getElementById('bucket').value.trim();
-            const region = document.getElementById('region').value.trim();
-            
-            if (!secretId || !secretKey || !bucket || !region) {
-                showToast('请填写所有配置项', 'error');
-                return;
-            }
-            
-            COS_CONFIG = { SecretId: secretId, SecretKey: secretKey, Bucket: bucket, Region: region };
-            localStorage.setItem('heigou_cos_config', JSON.stringify(COS_CONFIG));
-            initCOS();
-            showToast('配置保存成功！', 'success');
-        }
-        
-        function initCOS() {
-            if (!COS_CONFIG) return;
-            cos = new COS({ SecretId: COS_CONFIG.SecretId, SecretKey: COS_CONFIG.SecretKey });
-            document.getElementById('configPanel').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('contentGrid').style.display = 'grid';
-            document.getElementById('uploadBtn').style.display = 'flex';
-            init();
-        }
+        // ========================================
+        // 后端API地址（已配置）
+        // ========================================
+        const API_BASE_URL = 'https://heigou-tiandi.onrender.com';
+        // ========================================
 
         let files = [];
         let selectedFile = null;
@@ -548,38 +457,20 @@
         const confirmBtn = document.getElementById('confirmBtn');
 
         async function init() {
-            if (!cos) return;
-            await loadFilesFromCOS();
+            await loadFiles();
             renderAllLists();
         }
 
-        async function loadFilesFromCOS() {
+        async function loadFiles() {
             try {
-                const result = await cos.getBucket({
-                    Bucket: COS_CONFIG.Bucket,
-                    Region: COS_CONFIG.Region,
-                    Prefix: '',
-                    MaxKeys: 1000
-                });
-                
-                files = result.Contents.map(item => {
-                    const parts = item.Key.split('/');
-                    if (parts.length < 3) return null;
-                    const fileName = parts[parts.length - 1];
-                    return {
-                        name: fileName.replace(/^\d+_/, ''),
-                        cosKey: item.Key,
-                        cosUrl: `https://${COS_CONFIG.Bucket}.cos.${COS_CONFIG.Region}.myqcloud.com/${encodeURIComponent(item.Key)}`,
-                        category: parts[0] + '-' + parts[1],
-                        size: formatFileSize(item.Size),
-                        date: new Date(item.LastModified).toLocaleDateString('zh-CN'),
-                        grade: parts[0] === 'gaoyi' ? '高一' : parts[0] === 'gaoer' ? '高二' : '高三',
-                        type: parts[1] === 'xinde' ? '心得' : '试卷'
-                    };
-                }).filter(f => f !== null);
+                const response = await fetch(`${API_BASE_URL}/api/files`);
+                const data = await response.json();
+                if (data.success) {
+                    files = data.files;
+                }
             } catch (error) {
                 console.error('加载失败:', error);
-                files = [];
+                showToast('加载文件列表失败', 'error');
             }
         }
 
@@ -644,7 +535,7 @@
         });
 
         async function confirmUpload() {
-            if (!selectedFile || !cos) return;
+            if (!selectedFile) return;
             if (!selectedFile.name.endsWith('.docx') && !selectedFile.name.endsWith('.doc')) {
                 showToast('请上传Word文档（.docx 或 .doc）', 'error');
                 return;
@@ -655,31 +546,44 @@
             document.getElementById('progressContainer').style.display = 'block';
             
             try {
-                const gradeKey = { '高一': 'gaoyi', '高二': 'gaoer', '高三': 'gaosan' }[gradeSelect.value];
-                const typeKey = typeSelect.value === '心得' ? 'xinde' : 'shijuan';
-                const fileKey = `${gradeKey}/${typeKey}/${Date.now()}_${selectedFile.name}`;
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                formData.append('grade', gradeSelect.value);
+                formData.append('type', typeSelect.value);
+
+                const xhr = new XMLHttpRequest();
                 
-                await new Promise((resolve, reject) => {
-                    cos.putObject({
-                        Bucket: COS_CONFIG.Bucket,
-                        Region: COS_CONFIG.Region,
-                        Key: fileKey,
-                        Body: selectedFile,
-                        onProgress: function(progressData) {
-                            const percent = Math.round(progressData.percent * 100);
-                            document.getElementById('progressFill').style.width = percent + '%';
-                            document.getElementById('progressText').textContent = `上传中... ${percent}%`;
-                        }
-                    }, function(err, data) {
-                        if (err) reject(err);
-                        else resolve(data);
-                    });
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        document.getElementById('progressFill').style.width = percent + '%';
+                        document.getElementById('progressText').textContent = `上传中... ${percent}%`;
+                    }
                 });
+
+                xhr.addEventListener('load', async () => {
+                    const data = JSON.parse(xhr.responseText);
+                    if (data.success) {
+                        showToast('上传成功！', 'success');
+                        await loadFiles();
+                        renderAllLists();
+                        setTimeout(closeModal, 500);
+                    } else {
+                        showToast('上传失败：' + data.error, 'error');
+                        confirmBtn.disabled = false;
+                        confirmBtn.textContent = '确定上传';
+                    }
+                });
+
+                xhr.addEventListener('error', () => {
+                    showToast('上传失败', 'error');
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = '确定上传';
+                });
+
+                xhr.open('POST', `${API_BASE_URL}/api/upload`);
+                xhr.send(formData);
                 
-                showToast('上传成功！', 'success');
-                await loadFilesFromCOS();
-                renderAllLists();
-                setTimeout(closeModal, 500);
             } catch (error) {
                 showToast('上传失败：' + error.message, 'error');
                 confirmBtn.disabled = false;
@@ -733,14 +637,6 @@
             showToast('开始下载...', 'success');
         }
 
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
@@ -759,8 +655,8 @@
             if (e.target === modalOverlay) closeModal();
         });
 
-        // 页面加载时检查配置
-        window.onload = loadConfig;
+        // 页面加载时初始化
+        window.onload = init;
     </script>
 </body>
 </html>
