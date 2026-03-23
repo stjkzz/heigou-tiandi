@@ -34,7 +34,8 @@ app.get('/api/files', async (req, res) => {
             const parts = item.Key.split('/');
             if (parts.length < 3) return null;
             
-            const fileName = parts[parts.length - 1];
+            // 正确处理中文文件名
+            const fileName = decodeURIComponent(parts[parts.length - 1]);
             return {
                 name: fileName.replace(/^\d+_/, ''),
                 cosKey: item.Key,
@@ -66,7 +67,9 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
         
         const gradeKey = { '高一': 'gaoyi', '高二': 'gaoer', '高三': 'gaosan' }[grade];
         const typeKey = type === '心得' ? 'xinde' : 'shijuan';
-        const fileKey = `${gradeKey}/${typeKey}/${Date.now()}_${file.originalname}`;
+        // 使用 Buffer 正确处理中文文件名
+        const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
+        const fileKey = `${gradeKey}/${typeKey}/${Date.now()}_${originalName}`;
         
         await cos.putObject({
             Bucket: BUCKET,
