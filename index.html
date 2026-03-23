@@ -3,360 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>黑狗天地 - 云端版</title>
+    <title>黑狗天地</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --bg-hover: #1a1a1a;
+            --accent: #e07a5f;
+            --accent-hover: #c96a52;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --border: #2a2a2a;
+        }
+        
         body {
-            font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-dark);
             min-height: 100vh;
-            color: #3E2723;
+            color: var(--text-primary);
+            line-height: 1.6;
         }
+        
+        /* 顶部导航 */
         header {
-            background: linear-gradient(180deg, #5D4037 0%, #4E342E 100%);
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            position: relative;
-            overflow: hidden;
+            background: var(--bg-card);
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        header::before, header::after {
-            content: '🐓';
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 60px;
-            opacity: 0.3;
-            animation: float 3s ease-in-out infinite;
-        }
-        header::before { left: 10%; }
-        header::after { right: 10%; animation-direction: reverse; }
-        @keyframes float {
-            0%, 100% { transform: translateY(-50%) translateX(0); }
-            50% { transform: translateY(-50%) translateX(10px); }
-        }
+        
         .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
         }
-        .logo-icon { font-size: 50px; }
-        h1 {
-            font-size: 42px;
-            color: #FFE0B2;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-            letter-spacing: 8px;
+        
+        .logo-icon {
+            font-size: 32px;
         }
-        .subtitle {
-            color: #D7CCC8;
-            margin-top: 10px;
-            font-size: 16px;
-        }
+        
+        /* 主容器 */
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 30px 20px;
+            padding: 60px 40px;
         }
-        .hero-section {
-            background: rgba(255, 248, 225, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            border: 3px solid #8D6E63;
-            text-align: center;
+        
+        /* 大标题 */
+        .hero-title {
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
         }
-        .black-dog-img {
-            width: 200px;
-            height: 200px;
-            background: linear-gradient(135deg, #3E2723 0%, #5D4037 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 100px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 5px solid #8D6E63;
+        
+        .hero-title span {
+            color: var(--accent);
         }
-        .welcome-text {
-            font-size: 24px;
-            color: #5D4037;
-            margin-bottom: 10px;
+        
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+            max-width: 600px;
         }
+        
+        /* 内容网格 */
         .content-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            gap: 24px;
             margin-bottom: 100px;
         }
+        
+        /* 栏目卡片 */
         .column {
-            background: rgba(255, 248, 225, 0.95);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            border: 3px solid #8D6E63;
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
             min-height: 400px;
             max-height: 600px;
             display: flex;
             flex-direction: column;
+            transition: all 0.3s ease;
         }
+        
+        .column:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+        }
+        
+        .column-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .column-icon {
+            font-size: 24px;
+        }
+        
+        .column-title {
+            font-size: 16px;
+            font-weight: 600;
+            flex: 1;
+        }
+        
+        .column-count {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* 文件列表容器 */
         .file-list-container {
             overflow-y: auto;
             flex: 1;
             max-height: 450px;
         }
+        
         .file-list-container::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
+        
         .file-list-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
+            background: var(--bg-dark);
+            border-radius: 3px;
         }
+        
         .file-list-container::-webkit-scrollbar-thumb {
-            background: #8D6E63;
-            border-radius: 4px;
+            background: var(--border);
+            border-radius: 3px;
         }
-        .column-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #D7CCC8;
-        }
-        .column-icon { font-size: 30px; }
-        .column-title {
-            font-size: 20px;
-            color: #5D4037;
-            font-weight: bold;
-        }
-        .column-count {
-            background: #8D6E63;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            margin-left: auto;
-        }
+        
         .file-list { list-style: none; }
+        
         .file-item {
-            background: #FFF3E0;
-            border: 2px solid #D7CCC8;
-            border-radius: 10px;
-            padding: 12px;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
             margin-bottom: 10px;
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
         }
+        
         .file-item:hover {
-            transform: translateX(3px);
-            border-color: #8D6E63;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            border-color: var(--accent);
+            background: #222;
         }
+        
         .file-item:hover .delete-btn {
-            display: block;
+            opacity: 1;
         }
+        
         .delete-btn {
-            display: none;
+            opacity: 0;
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #f44336;
+            top: 8px;
+            right: 8px;
+            background: #ff4444;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 14px;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
             cursor: pointer;
-            line-height: 24px;
+            line-height: 22px;
             text-align: center;
+            transition: all 0.2s ease;
         }
+        
         .delete-btn:hover {
-            background: #d32f2f;
+            background: #ff2222;
+            transform: scale(1.1);
         }
+        
         .file-name {
-            font-size: 14px;
-            color: #5D4037;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            padding-right: 30px;
             word-break: break-all;
         }
+        
+        .file-meta {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+        
         .file-type-badge {
             display: inline-block;
-            padding: 2px 8px;
-            border-radius: 10px;
+            padding: 3px 10px;
+            border-radius: 20px;
             font-size: 10px;
-            margin-top: 5px;
+            margin-top: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .badge-shijuan { background: #FFCC80; color: #E65100; }
-        .badge-xinde { background: #C8E6C9; color: #2E7D32; }
+        
+        .badge-shijuan {
+            background: rgba(224, 122, 95, 0.2);
+            color: var(--accent);
+        }
+        
+        .badge-xinde {
+            background: rgba(100, 200, 150, 0.2);
+            color: #64c896;
+        }
+        
         .empty-state {
             text-align: center;
-            padding: 30px 10px;
-            color: #8D6E63;
+            padding: 40px 20px;
+            color: var(--text-secondary);
         }
+        
+        .empty-state div {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+        
+        /* 上传按钮 */
         .upload-trigger-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(180deg, #8D6E63 0%, #6D4C41 100%);
+            background: var(--accent);
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 16px;
+            padding: 16px 32px;
+            font-size: 15px;
+            font-weight: 600;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(224, 122, 95, 0.4);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 10px;
             z-index: 100;
+            letter-spacing: 0.5px;
         }
+        
         .upload-trigger-btn:hover {
-            transform: translateY(-3px) scale(1.05);
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(224, 122, 95, 0.5);
         }
+        
+        /* 弹窗 */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.8);
             z-index: 200;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(10px);
         }
+        
         .modal-overlay.show { display: flex; }
+        
         .modal {
-            background: #FFF8E1;
+            background: var(--bg-card);
             border-radius: 20px;
             padding: 40px;
             width: 90%;
-            max-width: 500px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            border: 3px solid #8D6E63;
+            max-width: 480px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
+        
         .modal-title {
             font-size: 24px;
-            color: #5D4037;
-            margin-bottom: 25px;
+            font-weight: 700;
+            margin-bottom: 30px;
             text-align: center;
         }
+        
         .modal-form {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
+        
         .form-group {
             display: flex;
             flex-direction: column;
         }
+        
         .form-group label {
-            font-size: 16px;
-            color: #5D4037;
+            font-size: 13px;
+            color: var(--text-secondary);
             margin-bottom: 8px;
-            font-weight: bold;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+        
         .form-group select, .add-file-btn {
-            padding: 12px 15px;
-            border: 2px solid #8D6E63;
-            border-radius: 10px;
-            font-size: 16px;
-            background: #FFF3E0;
-            color: #5D4037;
-            cursor: pointer;
-        }
-        .add-file-btn {
-            background: #FFCC80;
-            color: #E65100;
-            border: 2px dashed #E65100;
-            text-align: center;
-        }
-        .add-file-btn.disabled {
-            background: #E0E0E0;
-            border-color: #BDBDBD;
-            color: #9E9E9E;
-            cursor: not-allowed;
-        }
-        .file-selected {
-            background: #C8E6C9;
-            border: 2px solid #4CAF50;
-            color: #2E7D32;
-        }
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
-        .modal-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--bg-hover);
+            color: var(--text-primary);
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .btn-confirm {
-            background: linear-gradient(180deg, #4CAF50 0%, #45a049 100%);
-            color: white;
+        
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent);
         }
-        .btn-confirm:disabled {
-            background: #BDBDBD;
+        
+        .add-file-btn {
+            background: transparent;
+            border: 2px dashed var(--border);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .add-file-btn:hover:not(.disabled) {
+            border-color: var(--accent);
+            background: rgba(224, 122, 95, 0.05);
+        }
+        
+        .add-file-btn.disabled {
+            opacity: 0.5;
             cursor: not-allowed;
         }
-        .btn-cancel {
-            background: #E0E0E0;
-            color: #5D4037;
+        
+        .file-selected {
+            border-color: var(--accent) !important;
+            background: rgba(224, 122, 95, 0.1) !important;
         }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-confirm {
+            background: var(--accent);
+            color: white;
+        }
+        
+        .btn-confirm:hover:not(:disabled) {
+            background: var(--accent-hover);
+        }
+        
+        .btn-confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-cancel {
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+        
+        .btn-cancel:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+        
         .progress-container {
             display: none;
             margin-top: 15px;
         }
+        
         .progress-bar {
-            background: #E0E0E0;
+            background: var(--bg-hover);
             border-radius: 10px;
-            height: 15px;
+            height: 8px;
             overflow: hidden;
         }
+        
         .progress-fill {
-            background: linear-gradient(90deg, #8D6E63, #A1887F);
+            background: var(--accent);
             height: 100%;
             width: 0%;
             transition: width 0.3s ease;
             border-radius: 10px;
         }
+        
         .toast {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
+            padding: 16px 24px;
+            border-radius: 12px;
             color: white;
-            font-size: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             transform: translateX(400px);
             transition: transform 0.3s ease;
             z-index: 1000;
         }
+        
         .toast.show { transform: translateX(0); }
-        .toast.success { background: #4CAF50; }
-        .toast.error { background: #f44336; }
+        .toast.success { background: #22c55e; }
+        .toast.error { background: #ef4444; }
+        
         footer {
             text-align: center;
-            padding: 30px;
-            color: #D7CCC8;
-            font-size: 14px;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            border-top: 1px solid var(--border);
         }
+        
         @media (max-width: 1200px) {
             .content-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-title { font-size: 48px; }
         }
+        
         @media (max-width: 768px) {
             .content-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 36px; }
+            header { padding: 16px 20px; }
+            .container { padding: 40px 20px; }
         }
     </style>
 </head>
@@ -364,18 +465,13 @@
     <header>
         <div class="logo">
             <span class="logo-icon">🐕‍🦺</span>
-            <h1>黑狗天地</h1>
-            <span class="logo-icon">🐓</span>
+            <span>黑狗天地</span>
         </div>
-        <p class="subtitle">Word文档上传与下载中心 - 云端版</p>
     </header>
 
     <div class="container">
-        <section class="hero-section">
-            <div class="black-dog-img">🐕‍🦺</div>
-            <h2 class="welcome-text">欢迎来到黑狗天地云端版！</h2>
-            <p>文件存储在腾讯云，多设备同步</p>
-        </section>
+        <h1 class="hero-title">文件<span>共享</span>中心</h1>
+        <p class="hero-subtitle">高一、高二、高三试卷与心得资料上传下载平台</p>
 
         <div class="content-grid">
             <div class="column">
@@ -388,10 +484,11 @@
                     <ul class="file-list" id="list-gaoyi-shijuan"></ul>
                 </div>
                 <div class="empty-state" id="empty-gaoyi-shijuan">
-                    <div>🐓</div>
-                    <p>暂无高一试卷</p>
+                    <div>📝</div>
+                    <p>暂无文件</p>
                 </div>
             </div>
+
             <div class="column">
                 <div class="column-header">
                     <span class="column-icon">📖</span>
@@ -402,10 +499,11 @@
                     <ul class="file-list" id="list-gaoer-shijuan"></ul>
                 </div>
                 <div class="empty-state" id="empty-gaoer-shijuan">
-                    <div>🐓</div>
-                    <p>暂无高二试卷</p>
+                    <div>📝</div>
+                    <p>暂无文件</p>
                 </div>
             </div>
+
             <div class="column">
                 <div class="column-header">
                     <span class="column-icon">📖</span>
@@ -416,10 +514,11 @@
                     <ul class="file-list" id="list-gaosan-shijuan"></ul>
                 </div>
                 <div class="empty-state" id="empty-gaosan-shijuan">
-                    <div>🐓</div>
-                    <p>暂无高三试卷</p>
+                    <div>📝</div>
+                    <p>暂无文件</p>
                 </div>
             </div>
+
             <div class="column">
                 <div class="column-header">
                     <span class="column-icon">✍️</span>
@@ -430,8 +529,8 @@
                     <ul class="file-list" id="list-xinde"></ul>
                 </div>
                 <div class="empty-state" id="empty-xinde">
-                    <div>🐓</div>
-                    <p>暂无心得很</p>
+                    <div>✨</div>
+                    <p>暂无文件</p>
                 </div>
             </div>
         </div>
@@ -443,31 +542,31 @@
 
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
-            <h2 class="modal-title">🐕‍🦺 上传文档</h2>
+            <h2 class="modal-title">上传文档</h2>
             <div class="modal-form">
                 <div class="form-group">
-                    <label>📚 选择年级</label>
+                    <label>选择年级</label>
                     <select id="gradeSelect">
-                        <option value="">-- 请选择年级 --</option>
+                        <option value="">-- 请选择 --</option>
                         <option value="高一">高一</option>
                         <option value="高二">高二</option>
                         <option value="高三">高三</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>📋 选择类型</label>
+                    <label>选择类型</label>
                     <select id="typeSelect">
-                        <option value="">-- 请选择类型 --</option>
+                        <option value="">-- 请选择 --</option>
                         <option value="试卷">试卷</option>
                         <option value="心得">心得</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>📄 选择文件</label>
+                    <label>选择文件</label>
                     <div class="add-file-btn disabled" id="addFileBtn" onclick="handleAddFileClick()">
-                        <div style="font-size: 30px; margin-bottom: 10px;">➕</div>
+                        <div style="font-size: 28px; margin-bottom: 8px;">➕</div>
                         <div id="addFileText">请先选择年级和类型</div>
-                        <div style="font-size: 12px; color: #8D6E63; margin-top: 5px;">支持 .docx, .doc 格式</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 6px;">支持 .docx, .doc 格式</div>
                     </div>
                     <input type="file" id="fileInput" accept=".docx,.doc" style="display: none;">
                 </div>
@@ -475,7 +574,7 @@
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFill"></div>
                     </div>
-                    <p style="text-align: center; margin-top: 8px; color: #6D4C41;" id="progressText">上传中...</p>
+                    <p style="text-align: center; margin-top: 10px; color: var(--text-secondary); font-size: 13px;" id="progressText">上传中...</p>
                 </div>
                 <div class="modal-buttons">
                     <button class="modal-btn btn-cancel" onclick="closeModal()">取消</button>
@@ -486,18 +585,13 @@
     </div>
 
     <footer>
-        <p>🐓 黑狗天地 © 2024 🐓</p>
-        <p>Powered by 🐕‍🦺 黑狗 | 腾讯云COS</p>
+        <p>黑狗天地 © 2024</p>
     </footer>
 
     <div class="toast" id="toast"></div>
 
     <script>
-        // ========================================
-        // 后端API地址（已配置）
-        // ========================================
         const API_BASE_URL = 'https://heigou-tiandi.onrender.com';
-        // ========================================
 
         let files = [];
         let selectedFile = null;
@@ -667,7 +761,7 @@
                             <li class="file-item">
                                 <button class="delete-btn" onclick="event.stopPropagation(); deleteFile('${file.cosKey}', '${escapeHtml(file.name)}')">×</button>
                                 <div class="file-name" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${escapeHtml(file.name)}</div>
-                                <div style="font-size: 11px; color: #8D6E63;" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${file.size} · ${file.date}</div>
+                                <div class="file-meta" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${file.size} · ${file.date}</div>
                                 <span class="file-type-badge badge-${file.type === '试卷' ? 'shijuan' : 'xinde'}" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${file.type}</span>
                             </li>
                         `).join('');
@@ -677,15 +771,10 @@
         }
 
         async function deleteFile(key, name) {
-            // 先输入密码
             const password = prompt('请输入删除密码：');
-            if (!password) {
-                return; // 用户取消
-            }
+            if (!password) return;
             
-            if (!confirm(`确定要删除文件 "${name}" 吗？`)) {
-                return;
-            }
+            if (!confirm(`确定要删除文件 "${name}" 吗？`)) return;
             
             try {
                 const response = await fetch(`${API_BASE_URL}/api/delete?key=${encodeURIComponent(key)}&password=${encodeURIComponent(password)}`, {
@@ -733,7 +822,6 @@
             if (e.target === modalOverlay) closeModal();
         });
 
-        // 页面加载时初始化
         window.onload = init;
     </script>
 </body>
