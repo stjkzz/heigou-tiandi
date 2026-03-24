@@ -41,8 +41,10 @@
             align-items: center;
             gap: 12px;
             font-size: 24px;
-            font-weight: 700;
+            font-weight: 500;
             letter-spacing: 2px;
+            color: #555;
+            font-family: 'PingFang SC', 'Microsoft YaHei', -apple-system, sans-serif;
         }
         
         .logo-icon {
@@ -367,29 +369,28 @@
         /* 上传按钮 */
         .upload-trigger-btn {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 16px 32px;
-            font-size: 15px;
-            font-weight: 600;
-            border-radius: 50px;
+            bottom: 20px;
+            right: 20px;
+            background: #1a1a1a;
+            color: #333;
+            border: 1px solid #2a2a2a;
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: 6px;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(224, 122, 95, 0.4);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
             z-index: 100;
-            letter-spacing: 0.5px;
         }
         
         .upload-trigger-btn:hover {
-            background: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(224, 122, 95, 0.5);
+            background: #252525;
+            border-color: #444;
+            color: #666;
         }
         
         /* 弹窗 */
@@ -658,9 +659,7 @@
         </div>
     </div>
 
-    <button class="upload-trigger-btn" onclick="openModal()">
-        <span>📤</span> 上传文件
-    </button>
+    <button class="upload-trigger-btn" onclick="openModal()" title="上传文件">U</button>
 
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
