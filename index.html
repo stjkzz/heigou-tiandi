@@ -958,10 +958,13 @@
                             const displayName = removeExtension(file.name);
                             const escapedName = escapeHtml(file.name);
                             const escapedDisplayName = escapeHtml(displayName);
+                            // 使用单引号包裹参数，避免与HTML属性引号冲突
+                            const safeUrl = file.cosUrl.replace(/'/g, "\\'");
+                            const safeName = escapedName.replace(/'/g, "\\'");
                             // 心得需要密码，试卷直接下载
                             const clickHandler = isXinde 
-                                ? `handleXindeDownload("${file.cosUrl}", "${escapedName}")`
-                                : `downloadFile("${file.cosUrl}", "${escapedName}")`;
+                                ? `handleXindeDownload('${safeUrl}', '${safeName}')`
+                                : `downloadFile('${safeUrl}', '${safeName}')`;
                             return `
                             <li class="file-item">
                                 <button class="delete-btn" onclick="event.stopPropagation(); deleteFile('${file.cosKey}', '${escapedName}')">×</button>
