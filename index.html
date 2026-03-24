@@ -40,18 +40,13 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
         }
         
         .logo-icon {
             font-size: 32px;
-        }
-        
-        .logo-text {
-            font-size: 22px;
-            font-weight: 500;
-            letter-spacing: 3px;
-            color: #444;
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
         }
         
         /* 主容器 */
@@ -91,6 +86,124 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 24px;
             margin-bottom: 100px;
+        }
+        
+        /* 试卷栏之间的间距小，与心得栏间距大 */
+        .column[data-type="shijuan"] {
+            margin-right: 0;
+        }
+        
+        .column[data-type="xinde"] {
+            margin-left: 40px;
+        }
+        
+        /* 密码输入弹窗 */
+        .password-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 300;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .password-modal-overlay.show { display: flex; }
+        
+        .password-modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .password-modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        /* 试卷栏之间的间距小，与心得栏间距大 */
+        .column[data-type="shijuan"] {
+            margin-right: 0;
+        }
+        
+        .column[data-type="xinde"] {
+            margin-left: 40px;
+        }
+        
+        /* 密码输入弹窗 */
+        .password-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 300;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .password-modal-overlay.show { display: flex; }
+        
+        .password-modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .password-modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .password-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: var(--accent);
         }
         
         /* 栏目卡片 */
@@ -256,26 +369,27 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #1a1a1a;
-            color: #333;
-            border: 1px solid #333;
-            width: 36px;
-            height: 36px;
-            font-size: 13px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 15px;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
+            box-shadow: 0 4px 20px rgba(224, 122, 95, 0.4);
             transition: all 0.3s ease;
-            z-index: 100;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 10px;
+            z-index: 100;
+            letter-spacing: 0.5px;
         }
         
         .upload-trigger-btn:hover {
-            background: #252525;
-            border-color: #444;
-            color: #555;
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(224, 122, 95, 0.5);
         }
         
         /* 弹窗 */
@@ -474,7 +588,7 @@
     <header>
         <div class="logo">
             <span class="logo-icon">🐕‍🦺</span>
-            <span class="logo-text">黑狗天地</span>
+            <span>黑狗天地</span>
         </div>
     </header>
 
@@ -482,7 +596,7 @@
         <p class="hero-quote">莫为逐光，燃尽了自己，忘了为何出发。</p>
 
         <div class="content-grid">
-            <div class="column">
+            <div class="column" data-type="shijuan">
                 <div class="column-header">
                     <span class="column-icon">📖</span>
                     <span class="column-title">高一试卷</span>
@@ -497,7 +611,7 @@
                 </div>
             </div>
 
-            <div class="column">
+            <div class="column" data-type="shijuan">
                 <div class="column-header">
                     <span class="column-icon">📖</span>
                     <span class="column-title">高二试卷</span>
@@ -512,7 +626,7 @@
                 </div>
             </div>
 
-            <div class="column">
+            <div class="column" data-type="shijuan">
                 <div class="column-header">
                     <span class="column-icon">📖</span>
                     <span class="column-title">高三试卷</span>
@@ -527,7 +641,7 @@
                 </div>
             </div>
 
-            <div class="column">
+            <div class="column" data-type="xinde">
                 <div class="column-header">
                     <span class="column-icon">✍️</span>
                     <span class="column-title">心得</span>
@@ -544,7 +658,9 @@
         </div>
     </div>
 
-    <button class="upload-trigger-btn" onclick="openModal()" title="上传文件">U</button>
+    <button class="upload-trigger-btn" onclick="openModal()">
+        <span>📤</span> 上传文件
+    </button>
 
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
@@ -595,6 +711,18 @@
     </footer>
 
     <div class="toast" id="toast"></div>
+    
+    <!-- 密码输入弹窗 -->
+    <div class="password-modal-overlay" id="passwordModalOverlay">
+        <div class="password-modal">
+            <h3 class="password-modal-title">🔒 请输入下载密码</h3>
+            <input type="password" class="password-input" id="passwordInput" placeholder="输入密码" maxlength="20">
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="closePasswordModal()">取消</button>
+                <button class="modal-btn btn-confirm" id="passwordConfirmBtn" onclick="confirmPassword()">确认</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const API_BASE_URL = 'https://heigou-tiandi.onrender.com';
@@ -741,6 +869,69 @@
             }
         }
 
+        // 密码弹窗相关变量
+        let pendingDownloadUrl = null;
+        let pendingDownloadFilename = null;
+        const passwordModalOverlay = document.getElementById('passwordModalOverlay');
+        const passwordInput = document.getElementById('passwordInput');
+        const passwordConfirmBtn = document.getElementById('passwordConfirmBtn');
+        
+        // 下载密码（可以修改为你想要的密码）
+        const XINDE_DOWNLOAD_PASSWORD = 'mami';
+        
+        function openPasswordModal(url, filename) {
+            pendingDownloadUrl = url;
+            pendingDownloadFilename = filename;
+            passwordModalOverlay.classList.add('show');
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+        
+        function closePasswordModal() {
+            passwordModalOverlay.classList.remove('show');
+            pendingDownloadUrl = null;
+            pendingDownloadFilename = null;
+        }
+        
+        function confirmPassword() {
+            const inputPassword = passwordInput.value.trim();
+            if (inputPassword === XINDE_DOWNLOAD_PASSWORD) {
+                closePasswordModal();
+                if (pendingDownloadUrl && pendingDownloadFilename) {
+                    doDownload(pendingDownloadUrl, pendingDownloadFilename);
+                }
+            } else {
+                showToast('密码错误', 'error');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        // 回车确认密码
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                confirmPassword();
+            }
+        });
+        
+        passwordModalOverlay.addEventListener('click', function(e) {
+            if (e.target === passwordModalOverlay) closePasswordModal();
+        });
+        
+        // 移除文件后缀名
+        function removeExtension(filename) {
+            const lastDotIndex = filename.lastIndexOf('.');
+            if (lastDotIndex > 0) {
+                return filename.substring(0, lastDotIndex);
+            }
+            return filename;
+        }
+        
+        // 判断是否为心得栏目
+        function isXindeCategory(category) {
+            return category === 'xinde';
+        }
+
         function renderAllLists() {
             const categories = [
                 { key: 'gaoyi-shijuan', title: '高一试卷' },
@@ -763,22 +954,50 @@
                         emptyEl.style.display = 'block';
                     } else {
                         emptyEl.style.display = 'none';
-                        listEl.innerHTML = catFiles.map(file => `
+                        const isXinde = isXindeCategory(cat.key);
+                        listEl.innerHTML = catFiles.map(file => {
+                            const displayName = removeExtension(file.name);
+                            // 心得需要密码，试卷直接下载
+                            const clickHandler = isXinde 
+                                ? `handleXindeDownload('${file.cosUrl}', '${escapeHtml(file.name)}')`
+                                : `downloadFile('${file.cosUrl}', '${file.name}')`;
+                            return `
                             <li class="file-item">
                                 <button class="delete-btn" onclick="event.stopPropagation(); deleteFile('${file.cosKey}', '${escapeHtml(file.name)}')">×</button>
-                                <div class="file-name" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${escapeHtml(file.name)}</div>
-                                <div class="file-meta" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${file.size} · ${file.date}</div>
-                                <span class="file-type-badge badge-${file.type === '试卷' ? 'shijuan' : 'xinde'}" onclick="downloadFile('${file.cosUrl}', '${file.name}')">${file.type}</span>
+                                <div class="file-name" onclick="${clickHandler}">${escapeHtml(displayName)}</div>
+                                <div class="file-meta" onclick="${clickHandler}">${file.size} · ${file.date}</div>
+                                <span class="file-type-badge badge-${file.type === '试卷' ? 'shijuan' : 'xinde'}" onclick="${clickHandler}">${file.type}</span>
                             </li>
-                        `).join('');
+                        `;
+                        }).join('');
                     }
                 }
             });
+        }
+        
+        // 心得下载处理（需要密码）
+        function handleXindeDownload(url, filename) {
+            openPasswordModal(url, filename);
+        }
+        
+        // 执行实际下载
+        function doDownload(url, filename) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('开始下载...', 'success');
         }
 
         async function deleteFile(key, name) {
             const password = prompt('请输入删除密码：');
             if (!password) return;
+            if (password !== 'mami') {
+                showToast('密码错误', 'error');
+                return;
+            }
             
             if (!confirm(`确定要删除文件 "${name}" 吗？`)) return;
             
@@ -801,13 +1020,7 @@
         }
 
         function downloadFile(url, filename) {
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast('开始下载...', 'success');
+            doDownload(url, filename);
         }
 
         function escapeHtml(text) {
