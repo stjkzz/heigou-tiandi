@@ -920,11 +920,15 @@
             console.log('confirmPassword called');
             const inputPassword = passwordInput.value.trim();
             console.log('input password:', inputPassword, 'expected:', XINDE_DOWNLOAD_PASSWORD);
+            console.log('Before check - pendingDownloadUrl:', pendingDownloadUrl, 'pendingDownloadFilename:', pendingDownloadFilename);
             if (inputPassword === XINDE_DOWNLOAD_PASSWORD) {
-                console.log('Password correct, pendingDownloadUrl:', pendingDownloadUrl, 'pendingDownloadFilename:', pendingDownloadFilename);
+                // 先保存变量，再关闭弹窗
+                const url = pendingDownloadUrl;
+                const filename = pendingDownloadFilename;
+                console.log('Saved url:', url, 'filename:', filename);
                 closePasswordModal();
-                if (pendingDownloadUrl && pendingDownloadFilename) {
-                    doDownload(pendingDownloadUrl, pendingDownloadFilename);
+                if (url && filename) {
+                    doDownload(url, filename);
                 } else {
                     console.error('Missing download info');
                 }
