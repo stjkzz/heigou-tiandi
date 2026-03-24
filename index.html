@@ -871,8 +871,23 @@
         // 执行实际下载
         function doDownload(url, filename) {
             console.log('doDownload called with url:', url, 'filename:', filename);
-            // 方法1: 使用 window.open 直接打开下载链接
-            window.open(url, '_blank');
+            
+            // 方法1: 使用 a 标签下载
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            
+            // 模拟点击
+            const clickEvent = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+            });
+            link.dispatchEvent(clickEvent);
+            
+            document.body.removeChild(link);
             showToast('开始下载...', 'success');
         }
         
