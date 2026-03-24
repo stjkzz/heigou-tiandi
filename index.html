@@ -931,6 +931,9 @@
             return category === 'xinde';
         }
 
+        // 存储文件信息的 Map
+        const fileInfoMap = new Map();
+        
         function renderAllLists() {
             const categories = [
                 { key: 'gaoyi-shijuan', title: '高一试卷' },
@@ -954,36 +957,56 @@
                     } else {
                         emptyEl.style.display = 'none';
                         const isXinde = isXindeCategory(cat.key);
-                        listEl.innerHTML = catFiles.map(file => {
+                        listEl.innerHTML = '';
+                        
+                        catFiles.forEach(file => {
                             const displayName = removeExtension(file.name);
-                            // 对显示名称进行HTML转义，防止XSS
                             const escapedDisplayName = escapeHtml(displayName);
-                            // 对文件名进行HTML转义
                             const escapedName = escapeHtml(file.name);
-                            // 对URL和文件名进行JS字符串转义（处理单引号）
-                            const safeUrl = file.cosUrl.replace(/'/g, "\\'").replace(/"/g, '\\"');
-                            const safeName = file.name.replace(/'/g, "\\'").replace(/"/g, '\\"');
-                            // 心得需要密码，试卷直接下载
-                            const clickHandler = isXinde 
-                                ? `handleXindeDownload('${safeUrl}', '${safeName}')`
-                                : `downloadFile('${safeUrl}', '${safeName}')`;
-                            return `
-                            <li class="file-item">
-                                <button class="delete-btn" onclick="event.stopPropagation(); deleteFile('${file.cosKey}', '${escapedName}')">×</button>
-                                <div class="file-name" onclick="${clickHandler}">${escapedDisplayName}</div>
-                                <div class="file-meta" onclick="${clickHandler}">${file.size} · ${file.date}</div>
-                                <span class="file-type-badge badge-${file.type === '试卷' ? 'shijuan' : 'xinde'}" onclick="${clickHandler}">${file.type}</span>
-                            </li>
-                        `;
-                        }).join('');
+                            
+                            // 存储文件信息
+                            fileInfoMap.set(file.cosKey, {
+                                url: file.cosUrl,
+                                name: file.name,
+                                isXinde: isXinde
+                            });
+                            
+                            const li = document.createElement('li');
+                            li.className = 'file-item';
+                            li.innerHTML = `
+                                <button class="delete-btn" data-key="${file.cosKey}" data-name="${escapedName}">×</button>
+                                <div class="file-name" data-key="${file.cosKey}">${escapedDisplayName}</div>
+                                <div class="file-meta" data-key="${file.cosKey}">${file.size} · ${file.date}</div>
+                                <span class="file-type-badge badge-${file.type === '试卷' ? 'shijuan' : 'xinde'}" data-key="${file.cosKey}">${file.type}</span>
+                            `;
+                            
+                            // 绑定点击事件
+                            const fileKey = file.cosKey;
+                            li.querySelector('.file-name').addEventListener('click', () => handleFileClick(fileKey));
+                            li.querySelector('.file-meta').addEventListener('click', () => handleFileClick(fileKey));
+                            li.querySelector('.file-type-badge').addEventListener('click', () => handleFileClick(fileKey));
+                            li.querySelector('.delete-btn').addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                deleteFile(fileKey, file.name);
+                            });
+                            
+                            listEl.appendChild(li);
+                        });
                     }
                 }
             });
         }
         
-        // 心得下载处理（需要密码）
-        function handleXindeDownload(url, filename) {
-            openPasswordModal(url, filename);
+        // 处理文件点击
+        function handleFileClick(fileKey) {
+            const fileInfo = fileInfoMap.get(fileKey);
+            if (!fileInfo) return;
+            
+            if (fileInfo.isXinde) {
+                openPasswordModal(fileInfo.url, fileInfo.name);
+            } else {
+                doDownload(fileInfo.url, fileInfo.name);
+            }
         }
         
         // 执行实际下载
@@ -1025,9 +1048,7 @@
             }
         }
 
-        function downloadFile(url, filename) {
-            doDownload(url, filename);
-        }
+
 
         function escapeHtml(text) {
             const div = document.createElement('div');
