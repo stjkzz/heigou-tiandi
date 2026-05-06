@@ -892,15 +892,15 @@
         }
         
         // 密码弹窗相关变量
-        let pendingDownloadUrl = null;
+        let pendingDownloadKey = null;
         let pendingDownloadFilename = null;
         const passwordModalOverlay = document.getElementById('passwordModalOverlay');
         const passwordInput = document.getElementById('passwordInput');
         const passwordConfirmBtn = document.getElementById('passwordConfirmBtn');
         
-        function openPasswordModal(url, filename) {
-            console.log('openPasswordModal called with url:', url, 'filename:', filename);
-            pendingDownloadUrl = url;
+        function openPasswordModal(key, filename) {
+            console.log('openPasswordModal called with key:', key, 'filename:', filename);
+            pendingDownloadKey = key;
             pendingDownloadFilename = filename;
             passwordModalOverlay.classList.add('show');
             passwordInput.value = '';
@@ -909,14 +909,14 @@
         
         function closePasswordModal() {
             passwordModalOverlay.classList.remove('show');
-            pendingDownloadUrl = null;
+            pendingDownloadKey = null;
             pendingDownloadFilename = null;
         }
         
         async function confirmPassword() {
             console.log('confirmPassword called');
             const inputPassword = passwordInput.value.trim();
-            console.log('Before check - pendingDownloadUrl:', pendingDownloadUrl, 'pendingDownloadFilename:', pendingDownloadFilename);
+            console.log('Before check - pendingDownloadKey:', pendingDownloadKey, 'pendingDownloadFilename:', pendingDownloadFilename);
             
             if (!inputPassword) {
                 showToast('请输入密码', 'error');
@@ -924,12 +924,12 @@
             }
             
             // 保存变量
-            const url = pendingDownloadUrl;
+            const key = pendingDownloadKey;
             const filename = pendingDownloadFilename;
             
             try {
                 // 向后端验证密码并获取下载链接
-                const response = await fetch(`${API_BASE_URL}/api/download?key=${encodeURIComponent(url)}&password=${encodeURIComponent(inputPassword)}`);
+                const response = await fetch(`${API_BASE_URL}/api/download?key=${encodeURIComponent(key)}&password=${encodeURIComponent(inputPassword)}`);
                 const data = await response.json();
                 
                 if (data.success) {
@@ -988,7 +988,7 @@
             
             if (fileInfo.isXinde) {
                 console.log('Opening password modal for xinde file');
-                openPasswordModal(fileInfo.url, fileInfo.name);
+                openPasswordModal(fileInfo.key, fileInfo.name);
             } else {
                 console.log('Direct download for shijuan file');
                 doDownload(fileInfo.url, fileInfo.name);
@@ -1033,6 +1033,7 @@
                             // 存储文件信息
                             fileInfoMap.set(file.cosKey, {
                                 url: file.cosUrl,
+                                key: file.cosKey,
                                 name: file.name,
                                 isXinde: isXinde
                             });
