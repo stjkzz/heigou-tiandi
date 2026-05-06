@@ -898,9 +898,6 @@
         const passwordInput = document.getElementById('passwordInput');
         const passwordConfirmBtn = document.getElementById('passwordConfirmBtn');
         
-        // 下载密码（可以修改为你想要的密码）
-        const XINDE_DOWNLOAD_PASSWORD = 'mami';
-        
         function openPasswordModal(url, filename) {
             console.log('openPasswordModal called with url:', url, 'filename:', filename);
             pendingDownloadUrl = url;
@@ -916,26 +913,38 @@
             pendingDownloadFilename = null;
         }
         
-        function confirmPassword() {
+        async function confirmPassword() {
             console.log('confirmPassword called');
             const inputPassword = passwordInput.value.trim();
-            console.log('input password:', inputPassword, 'expected:', XINDE_DOWNLOAD_PASSWORD);
             console.log('Before check - pendingDownloadUrl:', pendingDownloadUrl, 'pendingDownloadFilename:', pendingDownloadFilename);
-            if (inputPassword === XINDE_DOWNLOAD_PASSWORD) {
-                // 先保存变量，再关闭弹窗
-                const url = pendingDownloadUrl;
-                const filename = pendingDownloadFilename;
-                console.log('Saved url:', url, 'filename:', filename);
-                closePasswordModal();
-                if (url && filename) {
-                    doDownload(url, filename);
+            
+            if (!inputPassword) {
+                showToast('请输入密码', 'error');
+                return;
+            }
+            
+            // 保存变量
+            const url = pendingDownloadUrl;
+            const filename = pendingDownloadFilename;
+            
+            try {
+                // 向后端验证密码并获取下载链接
+                const response = await fetch(`${API_BASE_URL}/api/download?key=${encodeURIComponent(url)}&password=${encodeURIComponent(inputPassword)}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    closePasswordModal();
+                    if (filename) {
+                        doDownload(data.url, filename);
+                    }
                 } else {
-                    console.error('Missing download info');
+                    showToast('密码错误', 'error');
+                    passwordInput.value = '';
+                    passwordInput.focus();
                 }
-            } else {
-                showToast('密码错误', 'error');
-                passwordInput.value = '';
-                passwordInput.focus();
+            } catch (error) {
+                showToast('验证失败', 'error');
+                console.error('Password verification failed:', error);
             }
         }
         
@@ -1057,10 +1066,6 @@
         async function deleteFile(key, name) {
             const password = prompt('请输入删除密码：');
             if (!password) return;
-            if (password !== 'mami') {
-                showToast('密码错误', 'error');
-                return;
-            }
             
             if (!confirm(`确定要删除文件 "${name}" 吗？`)) return;
             

@@ -93,10 +93,19 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     }
 });
 
-// 获取下载URL
+// 获取下载URL（心得需要密码验证）
 app.get('/api/download', async (req, res) => {
     try {
-        const { key } = req.query;
+        const { key, password } = req.query;
+        
+        // 判断是否是心得文件
+        if (key.includes('/xinde/')) {
+            const correctPassword = process.env.DELETE_PASSWORD || 'mami';
+            if (password !== correctPassword) {
+                return res.status(403).json({ success: false, error: '密码错误' });
+            }
+        }
+        
         const url = `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodeURIComponent(key)}`;
         res.json({ success: true, url });
     } catch (error) {
