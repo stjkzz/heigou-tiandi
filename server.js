@@ -178,7 +178,7 @@ app.post('/api/chat', async (req, res) => {
             
             ws.send(JSON.stringify({
                 header: { app_id: appid, uid: 'user' },
-                parameter: { chat: { domain: 'generalv3.5', temperature: 0.7, max_tokens: 2048 } },
+                parameter: { chat: { domain: 'ultra-32k', temperature: 0.7, max_tokens: 2048 } },
                 payload: { message: { text: messages } }
             }));
         });
