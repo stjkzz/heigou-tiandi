@@ -205,17 +205,16 @@ app.get('/api/test-spark', (req, res) => {
     const appid = process.env.SPARK_APPID;
     const apiKey = process.env.SPARK_API_KEY;
     const apiSecret = process.env.SPARK_API_SECRET;
+    const apiPassword = process.env.SPARK_API_PASSWORD;
     
     res.json({
+        version: '2024-05-07-v2',
         appid_set: !!appid,
         appid_value: appid,
-        appid_length: appid ? appid.length : 0,
         apiKey_set: !!apiKey,
-        apiKey_prefix: apiKey ? apiKey.substring(0, 8) + '...' : null,
-        apiKey_length: apiKey ? apiKey.length : 0,
         apiSecret_set: !!apiSecret,
-        apiSecret_prefix: apiSecret ? apiSecret.substring(0, 8) + '...' : null,
-        apiSecret_length: apiSecret ? apiSecret.length : 0
+        apiPassword_set: !!apiPassword,
+        apiPassword_prefix: apiPassword ? apiPassword.substring(0, 8) + '...' : null
     });
 });
 
