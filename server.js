@@ -164,11 +164,14 @@ app.post('/api/chat', async (req, res) => {
         ];
         
         // 使用 Spark Lite HTTP API
+        // 构建鉴权
+        const authString = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
+        
         const response = await fetch('https://spark-api-open.xf-yun.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}:${apiSecret}`
+                'Authorization': `Basic ${authString}`
             },
             body: JSON.stringify({
                 model: 'lite',
