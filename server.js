@@ -267,6 +267,22 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
+// 测试星火配置
+app.get('/api/test-spark', (req, res) => {
+    const appid = process.env.SPARK_APPID;
+    const apiKey = process.env.SPARK_API_KEY;
+    const apiSecret = process.env.SPARK_API_SECRET;
+    
+    res.json({
+        appid_set: !!appid,
+        appid_length: appid ? appid.length : 0,
+        apiKey_set: !!apiKey,
+        apiKey_length: apiKey ? apiKey.length : 0,
+        apiSecret_set: !!apiSecret,
+        apiSecret_length: apiSecret ? apiSecret.length : 0
+    });
+});
+
 function formatFileSize(bytes) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
