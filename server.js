@@ -142,119 +142,53 @@ app.delete('/api/delete', async (req, res) => {
 // 静态文件服务
 app.use(express.static('public'));
 
-// 讯飞星火对话接口
+// 讯飞星火对话接口 - 使用 Spark Lite HTTP API
 app.post('/api/chat', async (req, res) => {
     try {
         const { message, history = [] } = req.body;
         
-        const appid = process.env.SPARK_APPID;
         const apiKey = process.env.SPARK_API_KEY;
         const apiSecret = process.env.SPARK_API_SECRET;
         
-        console.log('Chat request received:', { appid: appid ? 'set' : 'missing', apiKey: apiKey ? 'set' : 'missing', apiSecret: apiSecret ? 'set' : 'missing' });
+        console.log('Chat request received:', { apiKey: apiKey ? 'set' : 'missing', apiSecret: apiSecret ? 'set' : 'missing' });
         
-        if (!appid || !apiKey || !apiSecret) {
+        if (!apiKey || !apiSecret) {
             return res.status(500).json({ success: false, error: '星火API配置缺失' });
         }
         
-        // 构建鉴权URL - 使用通用路径
-        const host = 'spark-api.xf-yun.com';
-        const path = '/v1.1/chat';
-        const date = new Date().toUTCString();
-        const signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${path} HTTP/1.1`;
-        const signature = crypto.createHmac('sha256', apiSecret).update(signatureOrigin).digest('base64');
-        const authorizationOrigin = `api_key="${apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
-        const authorization = Buffer.from(authorizationOrigin).toString('base64');
-        const url = `wss://${host}${path}?authorization=${authorization}&date=${encodeURIComponent(date)}&host=${host}`;
+        // 构建 messages
+        const messages = [
+            { role: 'system', content: 'You are a helpful English teacher. Help the user practice English. If they write in Chinese, explain in Chinese but encourage them to use English. Correct their grammar mistakes gently.' },
+            ...history,
+            { role: 'user', content: message }
+        ];
         
-        console.log('Connecting to Spark API...');
-        
-        // 连接WebSocket
-        const ws = new WebSocket(url);
-        let responseText = '';
-        let hasResponded = false;
-        
-        ws.on('open', () => {
-            console.log('WebSocket connected');
-            const messages = [
-                { role: 'system', content: 'You are a helpful English teacher. Help the user practice English. If they write in Chinese, explain in Chinese but encourage them to use English. Correct their grammar mistakes gently.' },
-                ...history,
-                { role: 'user', content: message }
-            ];
-            
-            const requestData = {
-                header: { app_id: appid, uid: 'user' },
-                parameter: { chat: { domain: 'general', temperature: 0.7, max_tokens: 2048 } },
-                payload: { message: { text: messages } }
-            };
-            
-            console.log('Sending request to Spark');
-            ws.send(JSON.stringify(requestData));
+        // 使用 Spark Lite HTTP API
+        const response = await fetch('https://spark-api-open.xf-yun.com/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}:${apiSecret}`
+            },
+            body: JSON.stringify({
+                model: 'lite',
+                messages: messages,
+                temperature: 0.7,
+                max_tokens: 2048
+            })
         });
         
-        ws.on('message', (data) => {
-            try {
-                const result = JSON.parse(data);
-                console.log('Received message, code:', result.header?.code);
-                
-                // 检查错误码
-                if (result.header && result.header.code !== 0) {
-                    console.error('Spark API error:', result.header.message);
-                    if (!hasResponded) {
-                        hasResponded = true;
-                        res.status(500).json({ success: false, error: result.header.message || '星火API错误' });
-                    }
-                    ws.close();
-                    return;
-                }
-                
-                if (result.payload && result.payload.choices && result.payload.choices.text) {
-                    const text = result.payload.choices.text[0].content;
-                    responseText += text;
-                    
-                    // status: 2 表示最后一帧
-                    if (result.payload.choices.status === 2) {
-                        console.log('Response complete, length:', responseText.length);
-                        ws.close();
-                        if (!hasResponded) {
-                            hasResponded = true;
-                            res.json({ success: true, reply: responseText });
-                        }
-                    }
-                }
-            } catch (parseError) {
-                console.error('Parse error:', parseError);
-            }
-        });
+        const data = await response.json();
+        console.log('Spark API response:', JSON.stringify(data).substring(0, 200));
         
-        ws.on('error', (error) => {
-            console.error('WebSocket error:', error.message || error);
-            if (!hasResponded) {
-                hasResponded = true;
-                res.status(500).json({ success: false, error: 'WebSocket错误: ' + (error.message || '未知错误') });
-            }
-        });
-        
-        ws.on('close', (code) => {
-            console.log('WebSocket closed, code:', code);
-            if (!hasResponded) {
-                hasResponded = true;
-                if (responseText) {
-                    res.json({ success: true, reply: responseText });
-                } else {
-                    res.status(500).json({ success: false, error: '连接已关闭，未收到回复' });
-                }
-            }
-        });
-        
-        // 超时处理
-        setTimeout(() => {
-            if (!hasResponded) {
-                hasResponded = true;
-                ws.terminate();
-                res.status(504).json({ success: false, error: '请求超时' });
-            }
-        }, 30000);
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+            res.json({ success: true, reply: data.choices[0].message.content });
+        } else if (data.error) {
+            console.error('Spark API error:', data.error);
+            res.status(500).json({ success: false, error: data.error.message || '星火API错误' });
+        } else {
+            res.status(500).json({ success: false, error: '未知错误' });
+        }
         
     } catch (error) {
         console.error('Chat error:', error);
