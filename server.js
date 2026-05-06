@@ -147,12 +147,12 @@ app.post('/api/chat', async (req, res) => {
     try {
         const { message, history = [] } = req.body;
         
-        const apiPassword = process.env.SPARK_API_PASSWORD;
+        const apiPassword = process.env.SPARK_API_PASSWORD || process.env.SPARK_API_KEY;
         
         console.log('Chat request received:', { apiPassword: apiPassword ? 'set' : 'missing' });
         
         if (!apiPassword) {
-            return res.status(500).json({ success: false, error: '星火API配置缺失，请设置 SPARK_API_PASSWORD' });
+            return res.status(500).json({ success: false, error: '星火API配置缺失，请设置 SPARK_API_PASSWORD 或 SPARK_API_KEY' });
         }
         
         // 构建 messages
