@@ -151,13 +151,15 @@ app.post('/api/chat', async (req, res) => {
         const apiKey = process.env.SPARK_API_KEY;
         const apiSecret = process.env.SPARK_API_SECRET;
         
+        console.log('Chat request received:', { appid: appid ? 'set' : 'missing', apiKey: apiKey ? 'set' : 'missing', apiSecret: apiSecret ? 'set' : 'missing' });
+        
         if (!appid || !apiKey || !apiSecret) {
             return res.status(500).json({ success: false, error: '星火API配置缺失' });
         }
         
-        // 构建鉴权URL
+        // 构建鉴权URL - 使用通用路径
         const host = 'spark-api.xf-yun.com';
-        const path = '/v3.5/chat';
+        const path = '/v1.1/chat';
         const date = new Date().toUTCString();
         const signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${path} HTTP/1.1`;
         const signature = crypto.createHmac('sha256', apiSecret).update(signatureOrigin).digest('base64');
@@ -165,46 +167,91 @@ app.post('/api/chat', async (req, res) => {
         const authorization = Buffer.from(authorizationOrigin).toString('base64');
         const url = `wss://${host}${path}?authorization=${authorization}&date=${encodeURIComponent(date)}&host=${host}`;
         
+        console.log('Connecting to Spark API...');
+        
         // 连接WebSocket
         const ws = new WebSocket(url);
         let responseText = '';
+        let hasResponded = false;
         
         ws.on('open', () => {
+            console.log('WebSocket connected');
             const messages = [
                 { role: 'system', content: 'You are a helpful English teacher. Help the user practice English. If they write in Chinese, explain in Chinese but encourage them to use English. Correct their grammar mistakes gently.' },
                 ...history,
                 { role: 'user', content: message }
             ];
             
-            ws.send(JSON.stringify({
+            const requestData = {
                 header: { app_id: appid, uid: 'user' },
-                parameter: { chat: { domain: 'ultra-32k', temperature: 0.7, max_tokens: 2048 } },
+                parameter: { chat: { domain: 'general', temperature: 0.7, max_tokens: 2048 } },
                 payload: { message: { text: messages } }
-            }));
+            };
+            
+            console.log('Sending request to Spark');
+            ws.send(JSON.stringify(requestData));
         });
         
         ws.on('message', (data) => {
-            const result = JSON.parse(data);
-            if (result.payload && result.payload.choices) {
-                const text = result.payload.choices.text[0].content;
-                responseText += text;
+            try {
+                const result = JSON.parse(data);
+                console.log('Received message, code:', result.header?.code);
                 
-                if (result.payload.choices.status === 2) {
+                // 检查错误码
+                if (result.header && result.header.code !== 0) {
+                    console.error('Spark API error:', result.header.message);
+                    if (!hasResponded) {
+                        hasResponded = true;
+                        res.status(500).json({ success: false, error: result.header.message || '星火API错误' });
+                    }
                     ws.close();
-                    res.json({ success: true, reply: responseText });
+                    return;
                 }
+                
+                if (result.payload && result.payload.choices && result.payload.choices.text) {
+                    const text = result.payload.choices.text[0].content;
+                    responseText += text;
+                    
+                    // status: 2 表示最后一帧
+                    if (result.payload.choices.status === 2) {
+                        console.log('Response complete, length:', responseText.length);
+                        ws.close();
+                        if (!hasResponded) {
+                            hasResponded = true;
+                            res.json({ success: true, reply: responseText });
+                        }
+                    }
+                }
+            } catch (parseError) {
+                console.error('Parse error:', parseError);
             }
         });
         
         ws.on('error', (error) => {
             console.error('WebSocket error:', error);
-            res.status(500).json({ success: false, error: '对话服务异常' });
+            if (!hasResponded) {
+                hasResponded = true;
+                res.status(500).json({ success: false, error: '对话服务异常: ' + error.message });
+            }
+        });
+        
+        ws.on('close', (code) => {
+            console.log('WebSocket closed, code:', code);
+            if (!hasResponded) {
+                hasResponded = true;
+                if (responseText) {
+                    res.json({ success: true, reply: responseText });
+                } else {
+                    res.status(500).json({ success: false, error: '连接已关闭，未收到回复' });
+                }
+            }
         });
         
         // 超时处理
         setTimeout(() => {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.close();
+            if (!hasResponded) {
+                hasResponded = true;
+                ws.terminate();
                 res.status(504).json({ success: false, error: '请求超时' });
             }
         }, 30000);
