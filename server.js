@@ -147,13 +147,12 @@ app.post('/api/chat', async (req, res) => {
     try {
         const { message, history = [] } = req.body;
         
-        const apiKey = process.env.SPARK_API_KEY;
-        const apiSecret = process.env.SPARK_API_SECRET;
+        const apiPassword = process.env.SPARK_API_PASSWORD;
         
-        console.log('Chat request received:', { apiKey: apiKey ? 'set' : 'missing', apiSecret: apiSecret ? 'set' : 'missing' });
+        console.log('Chat request received:', { apiPassword: apiPassword ? 'set' : 'missing' });
         
-        if (!apiKey || !apiSecret) {
-            return res.status(500).json({ success: false, error: '星火API配置缺失' });
+        if (!apiPassword) {
+            return res.status(500).json({ success: false, error: '星火API配置缺失，请设置 SPARK_API_PASSWORD' });
         }
         
         // 构建 messages
@@ -164,14 +163,11 @@ app.post('/api/chat', async (req, res) => {
         ];
         
         // 使用 Spark Lite HTTP API
-        // 构建鉴权
-        const authString = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
-        
         const response = await fetch('https://spark-api-open.xf-yun.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Basic ${authString}`
+                'Authorization': `Bearer ${apiPassword}`
             },
             body: JSON.stringify({
                 model: 'lite',
