@@ -228,10 +228,10 @@ app.post('/api/chat', async (req, res) => {
         });
         
         ws.on('error', (error) => {
-            console.error('WebSocket error:', error);
+            console.error('WebSocket error:', error.message || error);
             if (!hasResponded) {
                 hasResponded = true;
-                res.status(500).json({ success: false, error: '对话服务异常: ' + error.message });
+                res.status(500).json({ success: false, error: 'WebSocket错误: ' + (error.message || '未知错误') });
             }
         });
         
