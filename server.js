@@ -3,6 +3,8 @@ const COS = require('cos-nodejs-sdk-v5');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const WebSocket = require('ws');
+const crypto = require('crypto');
 
 const app = express();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -139,6 +141,79 @@ app.delete('/api/delete', async (req, res) => {
 
 // 静态文件服务
 app.use(express.static('public'));
+
+// 讯飞星火对话接口
+app.post('/api/chat', async (req, res) => {
+    try {
+        const { message, history = [] } = req.body;
+        
+        const appid = process.env.SPARK_APPID;
+        const apiKey = process.env.SPARK_API_KEY;
+        const apiSecret = process.env.SPARK_API_SECRET;
+        
+        if (!appid || !apiKey || !apiSecret) {
+            return res.status(500).json({ success: false, error: '星火API配置缺失' });
+        }
+        
+        // 构建鉴权URL
+        const host = 'spark-api.xf-yun.com';
+        const path = '/v3.5/chat';
+        const date = new Date().toUTCString();
+        const signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${path} HTTP/1.1`;
+        const signature = crypto.createHmac('sha256', apiSecret).update(signatureOrigin).digest('base64');
+        const authorizationOrigin = `api_key="${apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
+        const authorization = Buffer.from(authorizationOrigin).toString('base64');
+        const url = `wss://${host}${path}?authorization=${authorization}&date=${encodeURIComponent(date)}&host=${host}`;
+        
+        // 连接WebSocket
+        const ws = new WebSocket(url);
+        let responseText = '';
+        
+        ws.on('open', () => {
+            const messages = [
+                { role: 'system', content: 'You are a helpful English teacher. Help the user practice English. If they write in Chinese, explain in Chinese but encourage them to use English. Correct their grammar mistakes gently.' },
+                ...history,
+                { role: 'user', content: message }
+            ];
+            
+            ws.send(JSON.stringify({
+                header: { app_id: appid, uid: 'user' },
+                parameter: { chat: { domain: 'generalv3.5', temperature: 0.7, max_tokens: 2048 } },
+                payload: { message: { text: messages } }
+            }));
+        });
+        
+        ws.on('message', (data) => {
+            const result = JSON.parse(data);
+            if (result.payload && result.payload.choices) {
+                const text = result.payload.choices.text[0].content;
+                responseText += text;
+                
+                if (result.payload.choices.status === 2) {
+                    ws.close();
+                    res.json({ success: true, reply: responseText });
+                }
+            }
+        });
+        
+        ws.on('error', (error) => {
+            console.error('WebSocket error:', error);
+            res.status(500).json({ success: false, error: '对话服务异常' });
+        });
+        
+        // 超时处理
+        setTimeout(() => {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.close();
+                res.status(504).json({ success: false, error: '请求超时' });
+            }
+        }, 30000);
+        
+    } catch (error) {
+        console.error('Chat error:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
 
 // 健康检查
 app.get('/health', (req, res) => {
