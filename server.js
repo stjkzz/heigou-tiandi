@@ -275,10 +275,13 @@ app.get('/api/test-spark', (req, res) => {
     
     res.json({
         appid_set: !!appid,
+        appid_value: appid,
         appid_length: appid ? appid.length : 0,
         apiKey_set: !!apiKey,
+        apiKey_prefix: apiKey ? apiKey.substring(0, 8) + '...' : null,
         apiKey_length: apiKey ? apiKey.length : 0,
         apiSecret_set: !!apiSecret,
+        apiSecret_prefix: apiSecret ? apiSecret.substring(0, 8) + '...' : null,
         apiSecret_length: apiSecret ? apiSecret.length : 0
     });
 });
