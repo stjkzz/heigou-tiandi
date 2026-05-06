@@ -110,7 +110,7 @@ app.delete('/api/delete', async (req, res) => {
         const { key, password } = req.query;
         
         // 验证密码（从环境变量读取）
-        const correctPassword = process.env.DELETE_PASSWORD || 'admin123';
+        const correctPassword = process.env.DELETE_PASSWORD || 'mami';
         if (password !== correctPassword) {
             return res.status(403).json({ success: false, error: '密码错误' });
         }
