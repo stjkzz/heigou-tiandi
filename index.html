@@ -693,6 +693,21 @@
             transform: none;
         }
         
+        .speak-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            margin-left: 8px;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        
+        .speak-btn:hover {
+            opacity: 1;
+        }
+        
         .typing-indicator {
             display: flex;
             gap: 4px;
@@ -1302,12 +1317,56 @@
             if (e.target === chatModalOverlay) closeChatModal();
         });
 
+        // 语音播放功能
+        let isSpeaking = false;
+        
+        function speakText(text) {
+            if (!window.speechSynthesis) {
+                console.log('浏览器不支持语音合成');
+                return;
+            }
+            
+            // 停止之前的播放
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            
+            utterance.onstart = () => { isSpeaking = true; };
+            utterance.onend = () => { isSpeaking = false; };
+            utterance.onerror = () => { isSpeaking = false; };
+            
+            window.speechSynthesis.speak(utterance);
+        }
+        
+        function stopSpeaking() {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+            }
+        }
+
         function addMessage(text, isUser) {
             const div = document.createElement('div');
             div.className = `chat-message ${isUser ? 'user-message' : 'ai-message'}`;
-            div.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            
+            let html = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            
+            // AI 消息添加播放按钮
+            if (!isUser) {
+                html += `<button class="speak-btn" onclick="speakText('${escapeHtml(text).replace(/'/g, "\\'")}')" title="朗读">🔊</button>`;
+            }
+            
+            div.innerHTML = html;
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // AI 消息自动播放
+            if (!isUser) {
+                speakText(text);
+            }
         }
 
         function addTypingIndicator() {
