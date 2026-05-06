@@ -693,6 +693,38 @@
             transform: none;
         }
         
+        .voice-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .voice-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .voice-btn.recording {
+            animation: pulse 1.5s infinite;
+            background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+        
         .speak-btn {
             background: none;
             border: none;
@@ -910,6 +942,7 @@
                 </div>
             </div>
             <div class="chat-input-area">
+                <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="语音输入">🎤</button>
                 <input type="text" class="chat-input" id="chatInput" placeholder="输入英语或中文，和 AI 老师对话..." onkeypress="if(event.key==='Enter') sendChatMessage()">
                 <button class="chat-send-btn" onclick="sendChatMessage()">发送</button>
             </div>
@@ -1434,6 +1467,81 @@
                 chatInput.focus();
             }
         }
+
+        // 语音输入功能
+        let recognition = null;
+        let isRecording = false;
+
+        function initVoiceInput() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                console.log('浏览器不支持语音识别');
+                document.getElementById('voiceBtn').style.display = 'none';
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                isRecording = true;
+                document.getElementById('voiceBtn').classList.add('recording');
+                document.getElementById('chatInput').placeholder = '正在听你说英语...';
+            };
+
+            recognition.onend = () => {
+                isRecording = false;
+                document.getElementById('voiceBtn').classList.remove('recording');
+                document.getElementById('chatInput').placeholder = '输入英语或中文，和 AI 老师对话...';
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('chatInput').value = transcript;
+                // 自动发送
+                sendChatMessage();
+            };
+
+            recognition.onerror = (event) => {
+                console.error('语音识别错误:', event.error);
+                isRecording = false;
+                document.getElementById('voiceBtn').classList.remove('recording');
+                document.getElementById('chatInput').placeholder = '输入英语或中文，和 AI 老师对话...';
+                
+                if (event.error === 'not-allowed') {
+                    showToast('请允许使用麦克风权限', 'error');
+                } else if (event.error === 'no-speech') {
+                    showToast('没有检测到语音，请重试', 'error');
+                } else {
+                    showToast('语音识别失败，请重试', 'error');
+                }
+            };
+        }
+
+        function toggleVoiceInput() {
+            if (!recognition) {
+                initVoiceInput();
+            }
+
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                // 请求麦克风权限
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(() => {
+                        recognition.start();
+                    })
+                    .catch((err) => {
+                        console.error('麦克风权限被拒绝:', err);
+                        showToast('请允许使用麦克风权限', 'error');
+                    });
+            }
+        }
+
+        // 初始化语音输入
+        initVoiceInput();
 
         modalOverlay.addEventListener('click', function(e) {
             if (e.target === modalOverlay) closeModal();
