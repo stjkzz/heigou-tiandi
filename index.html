@@ -7,15 +7,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
         }
-        
-        /* 全屏背景 */
-        .hero-section {
+
+        /* ========== 主页：极简三行 ========== */
+        .home-section {
             position: relative;
             width: 100%;
             min-height: 100vh;
@@ -27,99 +27,110 @@
             color: white;
             text-align: center;
         }
-        
-        .hero-section::before {
+
+        .home-section::before {
             content: '';
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.35);
             z-index: 1;
         }
-        
-        .hero-content {
+
+        .home-content {
             position: relative;
             z-index: 2;
-            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
         }
-        
-        .hero-title {
-            font-size: 72px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            letter-spacing: 8px;
+
+        .home-title {
+            font-size: 64px;
+            font-weight: 700;
+            letter-spacing: 12px;
             text-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        
-        .hero-quote {
-            font-size: 20px;
+
+        .home-quote {
+            font-size: 18px;
             font-weight: 300;
-            opacity: 0.9;
-            letter-spacing: 2px;
+            opacity: 0.85;
+            letter-spacing: 3px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            margin-bottom: 60px;
         }
-        
-        /* 图标导航 */
-        .nav-icons {
+
+        .home-icons {
             display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 40px;
+            gap: 40px;
+            margin-top: 20px;
         }
-        
-        .nav-icon {
-            width: 80px;
-            height: 80px;
+
+        .home-icon {
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 28px;
+            font-size: 24px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
-            position: relative;
         }
-        
-        .nav-icon:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+
+        .home-icon:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
-        
-        .nav-icon .tooltip {
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-        
-        .nav-icon:hover .tooltip {
-            opacity: 1;
-        }
-        
-        /* 内容区域 */
-        .content-section {
+
+        /* ========== 资料心得页面 ========== */
+        .page-section {
+            display: none;
+            min-height: 100vh;
             background: #0a0a0a;
-            padding: 80px 40px;
             color: white;
+            padding: 60px 40px;
         }
-        
+
+        .page-section.active {
+            display: block;
+        }
+
+        .page-header {
+            max-width: 1400px;
+            margin: 0 auto 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-header h2 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
         .content-grid {
             max-width: 1400px;
             margin: 0 auto;
@@ -127,7 +138,7 @@
             grid-template-columns: repeat(4, 1fr);
             gap: 24px;
         }
-        
+
         .column {
             background: #141414;
             border-radius: 16px;
@@ -138,7 +149,7 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .column-header {
             display: flex;
             align-items: center;
@@ -147,17 +158,15 @@
             padding-bottom: 16px;
             border-bottom: 1px solid #2a2a2a;
         }
-        
-        .column-icon {
-            font-size: 24px;
-        }
-        
+
+        .column-icon { font-size: 24px; }
+
         .column-title {
             font-size: 16px;
             font-weight: 600;
             flex: 1;
         }
-        
+
         .column-count {
             background: #e07a5f;
             color: white;
@@ -166,15 +175,15 @@
             font-size: 12px;
             font-weight: 600;
         }
-        
+
         .file-list-container {
             overflow-y: auto;
             flex: 1;
             max-height: 450px;
         }
-        
+
         .file-list { list-style: none; }
-        
+
         .file-item {
             background: #1a1a1a;
             border: 1px solid #2a2a2a;
@@ -185,12 +194,12 @@
             cursor: pointer;
             position: relative;
         }
-        
+
         .file-item:hover {
             border-color: #e07a5f;
             background: #222;
         }
-        
+
         .delete-btn {
             opacity: 0;
             position: absolute;
@@ -199,245 +208,368 @@
             background: #ff4444;
             color: white;
             border: none;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 12px;
             cursor: pointer;
-            line-height: 22px;
-            text-align: center;
-            transition: all 0.2s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s;
         }
-        
-        .file-item:hover .delete-btn {
-            opacity: 1;
-        }
-        
+
+        .file-item:hover .delete-btn { opacity: 1; }
+
         .file-name {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 500;
             margin-bottom: 6px;
             padding-right: 30px;
-            word-break: break-all;
         }
-        
+
         .file-meta {
-            font-size: 11px;
+            font-size: 12px;
             color: #888;
         }
-        
+
         .empty-state {
             text-align: center;
             padding: 40px 20px;
-            color: #888;
+            color: #666;
+            display: none;
         }
-        
-        .empty-state div {
-            font-size: 40px;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
-        
-        /* 英语角按钮 */
-        .english-corner-btn {
+
+        .empty-state div { font-size: 48px; margin-bottom: 12px; }
+
+        /* ========== 上传按钮 ========== */
+        .upload-trigger-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            width: 60px;
-            height: 60px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #e07a5f;
             color: white;
             border: none;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(224, 122, 95, 0.4);
+            transition: all 0.3s;
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .english-corner-btn:hover {
+
+        .upload-trigger-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 6px 20px rgba(224, 122, 95, 0.5);
         }
-        
-        /* 聊天窗口 */
-        .chat-modal-overlay {
+
+        /* ========== 弹窗样式 ========== */
+        .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 400;
-            justify-content: center;
+            background: rgba(0,0,0,0.7);
+            z-index: 200;
             align-items: center;
-            backdrop-filter: blur(10px);
+            justify-content: center;
         }
-        
-        .chat-modal-overlay.show { display: flex; }
-        
-        .chat-modal {
-            background: #141414;
-            border-radius: 20px;
+
+        .modal-overlay.show { display: flex; }
+
+        .modal {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 32px;
             width: 90%;
-            max-width: 600px;
-            height: 80vh;
-            max-height: 700px;
-            border: 1px solid #2a2a2a;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-            display: flex;
-            flex-direction: column;
+            max-width: 480px;
+            border: 1px solid #333;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .form-group select, .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #222;
+            color: white;
+            font-size: 14px;
+        }
+
+        .add-file-btn {
+            border: 2px dashed #444;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-file-btn:hover { border-color: #e07a5f; }
+
+        .add-file-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .add-file-btn.file-selected {
+            border-color: #4caf50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .progress-container { display: none; margin-top: 16px; }
+
+        .progress-bar {
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
             overflow: hidden;
         }
-        
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        
-        .chat-message {
-            display: flex;
-            max-width: 80%;
-        }
-        
-        .user-message {
-            align-self: flex-end;
-        }
-        
-        .ai-message {
-            align-self: flex-start;
-        }
-        
-        .message-bubble {
-            padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 14px;
-            line-height: 1.5;
-            word-break: break-word;
-        }
-        
-        .user-message .message-bubble {
+
+        .progress-fill {
+            height: 100%;
             background: #e07a5f;
-            color: white;
-            border-bottom-right-radius: 4px;
+            width: 0%;
+            transition: width 0.3s;
         }
-        
-        .ai-message .message-bubble {
-            background: #1a1a1a;
-            color: white;
-            border: 1px solid #2a2a2a;
-            border-bottom-left-radius: 4px;
-        }
-        
-        .chat-input-area {
-            padding: 16px 20px;
-            border-top: 1px solid #2a2a2a;
+
+        .modal-buttons {
             display: flex;
             gap: 12px;
-            background: #141414;
+            margin-top: 24px;
         }
-        
-        .chat-input {
+
+        .modal-btn {
             flex: 1;
-            padding: 12px 16px;
-            border: 1px solid #2a2a2a;
-            border-radius: 24px;
-            font-size: 14px;
-            background: #1a1a1a;
-            color: white;
-            outline: none;
-        }
-        
-        .chat-input:focus {
-            border-color: #667eea;
-        }
-        
-        .voice-btn {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
-            color: white;
+            padding: 12px;
+            border-radius: 8px;
             border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 18px;
+            font-size: 14px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel {
+            background: #333;
+            color: white;
+        }
+
+        .btn-confirm {
+            background: #e07a5f;
+            color: white;
+        }
+
+        .btn-confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 密码弹窗 */
+        .password-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 200;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0;
         }
-        
-        .voice-btn:hover {
-            transform: scale(1.1);
+
+        .password-modal-overlay.show { display: flex; }
+
+        .password-modal {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 32px;
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #333;
+            text-align: center;
         }
-        
-        .voice-btn.recording {
-            animation: pulse 1.5s infinite;
+
+        .password-modal-title {
+            font-size: 18px;
+            margin-bottom: 20px;
         }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
-        }
-        
-        .chat-send-btn {
-            padding: 12px 24px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        .password-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background: #222;
             color: white;
-            border: none;
-            border-radius: 24px;
-            font-size: 14px;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* ========== 英语角页面 ========== */
+        .english-section {
+            display: none;
+            min-height: 100vh;
+            background: #0a0a0a;
+            color: white;
+        }
+
+        .english-section.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px 40px;
+            border-bottom: 1px solid #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h2 {
+            font-size: 20px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
-        
-        .chat-send-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+
+        .chat-messages {
+            flex: 1;
+            padding: 30px 40px;
+            overflow-y: auto;
+            max-height: calc(100vh - 160px);
         }
-        
+
+        .chat-message {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .chat-message.user-message {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .ai-message .message-bubble {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-bottom-left-radius: 4px;
+        }
+
+        .user-message .message-bubble {
+            background: #e07a5f;
+            border-bottom-right-radius: 4px;
+        }
+
         .speak-btn {
             background: none;
             border: none;
+            color: #888;
             cursor: pointer;
             font-size: 16px;
-            padding: 4px;
             margin-left: 8px;
-            opacity: 0.6;
-            transition: opacity 0.2s;
+            padding: 4px;
         }
-        
-        .speak-btn:hover {
-            opacity: 1;
+
+        .speak-btn:hover { color: #e07a5f; }
+
+        .chat-input-area {
+            padding: 20px 40px;
+            border-top: 1px solid #2a2a2a;
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
-        
+
+        .voice-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #333;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .voice-btn:hover { background: #444; }
+
+        .voice-btn.recording {
+            background: #ff4444;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 18px;
+            border-radius: 24px;
+            border: 1px solid #333;
+            background: #1a1a1a;
+            color: white;
+            font-size: 15px;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #e07a5f;
+        }
+
+        .chat-send-btn {
+            padding: 12px 24px;
+            border-radius: 24px;
+            background: #e07a5f;
+            color: white;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chat-send-btn:hover { background: #d4694e; }
+
+        .chat-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
         .typing-indicator {
             display: flex;
-            gap: 4px;
-            padding: 12px 16px;
+            gap: 6px;
+            padding: 8px 0;
         }
-        
+
         .typing-indicator span {
             width: 8px;
             height: 8px;
@@ -445,267 +577,78 @@
             border-radius: 50%;
             animation: typing 1.4s infinite;
         }
-        
+
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
         .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        
+
         @keyframes typing {
             0%, 60%, 100% { transform: translateY(0); }
             30% { transform: translateY(-10px); }
         }
-        
-        /* 上传按钮 */
-        .upload-trigger-btn {
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #e07a5f;
-            color: white;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(224, 122, 95, 0.4);
-            transition: all 0.3s ease;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .upload-trigger-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(224, 122, 95, 0.6);
-        }
-        
-        /* 弹窗 */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 200;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(10px);
-        }
-        
-        .modal-overlay.show { display: flex; }
-        
-        .modal {
-            background: #141414;
-            border-radius: 20px;
-            padding: 40px;
-            width: 90%;
-            max-width: 480px;
-            border: 1px solid #2a2a2a;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
-        
-        .modal-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 30px;
-            text-align: center;
-            color: white;
-        }
-        
-        .modal-form {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .form-group label {
-            font-size: 13px;
-            color: #888;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        
-        .form-group select, .add-file-btn {
-            padding: 14px 16px;
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            font-size: 15px;
-            background: #1a1a1a;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .form-group select:focus {
-            outline: none;
-            border-color: #e07a5f;
-        }
-        
-        .add-file-btn {
-            background: transparent;
-            border: 2px dashed #2a2a2a;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .add-file-btn:hover:not(.disabled) {
-            border-color: #e07a5f;
-            background: rgba(224, 122, 95, 0.05);
-        }
-        
-        .add-file-btn.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .file-selected {
-            border-color: #e07a5f !important;
-            background: rgba(224, 122, 95, 0.1) !important;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 10px;
-        }
-        
-        .modal-btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-confirm {
-            background: #e07a5f;
-            color: white;
-        }
-        
-        .btn-confirm:hover:not(:disabled) {
-            background: #c96a52;
-        }
-        
-        .btn-confirm:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .btn-cancel {
-            background: #1a1a1a;
-            color: #888;
-            border: 1px solid #2a2a2a;
-        }
-        
-        .btn-cancel:hover {
-            background: #2a2a2a;
-            color: white;
-        }
-        
-        .progress-container {
-            display: none;
-            margin-top: 15px;
-        }
-        
-        .progress-bar {
-            background: #1a1a1a;
-            border-radius: 10px;
-            height: 8px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            background: #e07a5f;
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 10px;
-        }
-        
+
+        /* Toast */
         .toast {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 24px;
-            border-radius: 12px;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 12px 24px;
+            border-radius: 8px;
             color: white;
             font-size: 14px;
-            font-weight: 500;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            z-index: 1000;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.3s;
         }
-        
-        .toast.show { transform: translateX(0); }
-        .toast.success { background: #22c55e; }
-        .toast.error { background: #ef4444; }
-        
-        footer {
-            text-align: center;
-            padding: 40px;
-            color: #888;
-            font-size: 13px;
-            border-top: 1px solid #2a2a2a;
-            background: #0a0a0a;
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
-        
-        @media (max-width: 1200px) {
+
+        .toast.success { background: #4caf50; }
+        .toast.error { background: #ff4444; }
+
+        /* 响应式 */
+        @media (max-width: 1024px) {
             .content-grid { grid-template-columns: repeat(2, 1fr); }
-            .hero-title { font-size: 48px; }
         }
-        
+
         @media (max-width: 768px) {
+            .home-title { font-size: 42px; letter-spacing: 6px; }
+            .home-quote { font-size: 14px; }
             .content-grid { grid-template-columns: 1fr; }
-            .hero-title { font-size: 36px; }
-            .nav-icons { gap: 20px; }
-            .nav-icon { width: 60px; height: 60px; font-size: 22px; }
+            .page-section { padding: 40px 20px; }
+            .chat-messages, .chat-input-area { padding: 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- 主页 Hero -->
-    <section class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title">黑狗天地</h1>
-            <p class="hero-quote">莫为逐光，燃尽了自己，忘了为何出发</p>
-            
-            <div class="nav-icons">
-                <a href="#gaoyi" class="nav-icon">
-                    <i class="fas fa-calculator"></i>
-                    <span class="tooltip">高一试卷</span>
+
+    <!-- ========== 主页 ========== -->
+    <section class="home-section" id="homeSection">
+        <div class="home-content">
+            <h1 class="home-title">黑狗天地</h1>
+            <p class="home-quote">莫为逐光，燃尽了自己，忘了为何出发。</p>
+            <div class="home-icons">
+                <a class="home-icon" onclick="showPage('materials')" title="资料心得">
+                    <i class="fas fa-pen"></i>
                 </a>
-                <a href="#gaoer" class="nav-icon">
-                    <i class="fas fa-square-root-alt"></i>
-                    <span class="tooltip">高二试卷</span>
-                </a>
-                <a href="#gaosan" class="nav-icon">
-                    <i class="fas fa-infinity"></i>
-                    <span class="tooltip">高三试卷</span>
-                </a>
-                <a href="#xinde" class="nav-icon">
-                    <i class="fas fa-pen-fancy"></i>
-                    <span class="tooltip">心得</span>
-                </a>
-                <a href="#english" class="nav-icon" onclick="openChatModal(); return false;">
+                <a class="home-icon" onclick="showPage('english')" title="英语角">
                     <i class="fas fa-microphone"></i>
-                    <span class="tooltip">口语练习</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- 内容区域 -->
-    <section class="content-section">
+    <!-- ========== 资料心得页面 ========== -->
+    <section class="page-section" id="materialsSection">
+        <div class="page-header">
+            <h2>📚 资料心得</h2>
+            <button class="back-btn" onclick="showPage('home')">
+                <i class="fas fa-arrow-left"></i> 返回
+            </button>
+        </div>
         <div class="content-grid">
             <div class="column" id="gaoyi">
                 <div class="column-header">
@@ -721,7 +664,6 @@
                     <p>暂无文件</p>
                 </div>
             </div>
-
             <div class="column" id="gaoer">
                 <div class="column-header">
                     <span class="column-icon">📖</span>
@@ -736,7 +678,6 @@
                     <p>暂无文件</p>
                 </div>
             </div>
-
             <div class="column" id="gaosan">
                 <div class="column-header">
                     <span class="column-icon">📖</span>
@@ -751,7 +692,6 @@
                     <p>暂无文件</p>
                 </div>
             </div>
-
             <div class="column" id="xinde">
                 <div class="column-header">
                     <span class="column-icon">✍️</span>
@@ -769,55 +709,73 @@
         </div>
     </section>
 
-    <button class="upload-trigger-btn" onclick="openModal()" title="上传文件">+</button>
-    <button class="english-corner-btn" onclick="openChatModal()" title="英语角">🌍</button>
+    <!-- ========== 英语角页面 ========== -->
+    <section class="english-section" id="englishSection">
+        <div class="chat-header">
+            <h2>🌍 英语角 - AI 口语练习</h2>
+            <button class="back-btn" onclick="showPage('home')">
+                <i class="fas fa-arrow-left"></i> 返回
+            </button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-message ai-message">
+                <div class="message-bubble">Hello! I'm your AI English teacher. What would you like to practice today? You can talk about any topic, or I can suggest one for you! 🎯</div>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="语音输入">🎤</button>
+            <input type="text" class="chat-input" id="chatInput" placeholder="输入英语或中文，和 AI 老师对话..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button class="chat-send-btn" onclick="sendChatMessage()">发送</button>
+        </div>
+    </section>
 
-    <!-- 上传弹窗 -->
+    <!-- ========== 上传按钮 ========== -->
+    <button class="upload-trigger-btn" onclick="openModal()" title="上传文件" id="uploadBtn" style="display:none;">+</button>
+
+    <!-- ========== 上传弹窗 ========== -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal">
             <h2 class="modal-title">上传文档</h2>
-            <div class="modal-form">
-                <div class="form-group">
-                    <label>选择年级</label>
-                    <select id="gradeSelect">
-                        <option value="">-- 请选择 --</option>
-                        <option value="高一">高一</option>
-                        <option value="高二">高二</option>
-                        <option value="高三">高三</option>
-                    </select>
+            <div class="form-group">
+                <label>选择年级</label>
+                <select id="gradeSelect">
+                    <option value="">-- 请选择 --</option>
+                    <option value="高一">高一</option>
+                    <option value="高二">高二</option>
+                    <option value="高三">高三</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>选择类型</label>
+                <select id="typeSelect">
+                    <option value="">-- 请选择 --</option>
+                    <option value="试卷">试卷</option>
+                    <option value="心得">心得</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>选择文件</label>
+                <div class="add-file-btn disabled" id="addFileBtn" onclick="handleAddFileClick()">
+                    <div style="font-size: 28px; margin-bottom: 8px;">➕</div>
+                    <div id="addFileText">请先选择年级和类型</div>
+                    <div style="font-size: 12px; color: #888; margin-top: 6px;">支持 .docx, .doc 格式</div>
                 </div>
-                <div class="form-group">
-                    <label>选择类型</label>
-                    <select id="typeSelect">
-                        <option value="">-- 请选择 --</option>
-                        <option value="试卷">试卷</option>
-                        <option value="心得">心得</option>
-                    </select>
+                <input type="file" id="fileInput" accept=".docx,.doc" style="display: none;">
+            </div>
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
                 </div>
-                <div class="form-group">
-                    <label>选择文件</label>
-                    <div class="add-file-btn disabled" id="addFileBtn" onclick="handleAddFileClick()">
-                        <div style="font-size: 28px; margin-bottom: 8px;">➕</div>
-                        <div id="addFileText">请先选择年级和类型</div>
-                        <div style="font-size: 12px; color: #888; margin-top: 6px;">支持 .docx, .doc 格式</div>
-                    </div>
-                    <input type="file" id="fileInput" accept=".docx,.doc" style="display: none;">
-                </div>
-                <div class="progress-container" id="progressContainer">
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progressFill"></div>
-                    </div>
-                    <p style="text-align: center; margin-top: 10px; color: #888; font-size: 13px;" id="progressText">上传中...</p>
-                </div>
-                <div class="modal-buttons">
-                    <button class="modal-btn btn-cancel" onclick="closeModal()">取消</button>
-                    <button class="modal-btn btn-confirm" id="confirmBtn" onclick="confirmUpload()" disabled>确定上传</button>
-                </div>
+                <p style="text-align: center; margin-top: 10px; color: #888; font-size: 13px;" id="progressText">上传中...</p>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="closeModal()">取消</button>
+                <button class="modal-btn btn-confirm" id="confirmBtn" onclick="confirmUpload()" disabled>确定上传</button>
             </div>
         </div>
     </div>
 
-    <!-- 密码输入弹窗 -->
+    <!-- ========== 密码弹窗 ========== -->
     <div class="password-modal-overlay" id="passwordModalOverlay">
         <div class="password-modal">
             <h3 class="password-modal-title">🔒 请输入下载密码</h3>
@@ -828,31 +786,8 @@
             </div>
         </div>
     </div>
-    
-    <!-- 英语角聊天窗口 -->
-    <div class="chat-modal-overlay" id="chatModalOverlay">
-        <div class="chat-modal">
-            <div class="chat-header">
-                <span>🌍 英语角 - AI 口语练习</span>
-                <button onclick="closeChatModal()" style="background: none; border: none; color: white; font-size: 24px; cursor: pointer;">×</button>
-            </div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="chat-message ai-message">
-                    <div class="message-bubble">Hello! I'm your AI English teacher. What would you like to practice today? You can talk about any topic, or I can suggest one for you! 🎯</div>
-                </div>
-            </div>
-            <div class="chat-input-area">
-                <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="语音输入">🎤</button>
-                <input type="text" class="chat-input" id="chatInput" placeholder="输入英语或中文，和 AI 老师对话..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-                <button class="chat-send-btn" onclick="sendChatMessage()">发送</button>
-            </div>
-        </div>
-    </div>
 
-    <footer>
-        <p>黑狗天地 © 2024</p>
-    </footer>
-
+    <!-- ========== Toast ========== -->
     <div class="toast" id="toast"></div>
 
     <script>
@@ -860,10 +795,21 @@
 
         let files = [];
         let selectedFile = null;
-        const modalOverlay = document.getElementById('modalOverlay');
-        const gradeSelect = document.getElementById('gradeSelect');
-        const typeSelect = document.getElementById('typeSelect');
-        const confirmBtn = document.getElementById('confirmBtn');
+        let currentPage = 'home';
+
+        // 页面切换
+        function showPage(page) {
+            currentPage = page;
+            document.getElementById('homeSection').style.display = page === 'home' ? 'flex' : 'none';
+            document.getElementById('materialsSection').classList.toggle('active', page === 'materials');
+            document.getElementById('englishSection').classList.toggle('active', page === 'english');
+            document.getElementById('uploadBtn').style.display = page === 'materials' ? 'flex' : 'none';
+
+            if (page === 'materials') {
+                init();
+            }
+            window.scrollTo(0, 0);
+        }
 
         async function init() {
             await loadFiles();
@@ -883,34 +829,35 @@
             }
         }
 
+        // 上传弹窗
         function openModal() {
-            modalOverlay.classList.add('show');
+            document.getElementById('modalOverlay').classList.add('show');
             resetForm();
         }
 
         function closeModal() {
-            modalOverlay.classList.remove('show');
+            document.getElementById('modalOverlay').classList.remove('show');
             resetForm();
         }
 
         function resetForm() {
-            gradeSelect.value = '';
-            typeSelect.value = '';
+            document.getElementById('gradeSelect').value = '';
+            document.getElementById('typeSelect').value = '';
             document.getElementById('fileInput').value = '';
             selectedFile = null;
             document.getElementById('addFileBtn').classList.add('disabled');
             document.getElementById('addFileBtn').classList.remove('file-selected');
             document.getElementById('addFileText').textContent = '请先选择年级和类型';
-            confirmBtn.disabled = true;
+            document.getElementById('confirmBtn').disabled = true;
             document.getElementById('progressContainer').style.display = 'none';
             document.getElementById('progressFill').style.width = '0%';
         }
 
         function checkCanUpload() {
-            const hasGrade = gradeSelect.value !== '';
-            const hasType = typeSelect.value !== '';
+            const hasGrade = document.getElementById('gradeSelect').value !== '';
+            const hasType = document.getElementById('typeSelect').value !== '';
             const btn = document.getElementById('addFileBtn');
-            
+
             if (hasGrade && hasType) {
                 btn.classList.remove('disabled');
                 if (!selectedFile) document.getElementById('addFileText').textContent = '点击添加Word文档';
@@ -918,15 +865,15 @@
                 btn.classList.add('disabled');
                 document.getElementById('addFileText').textContent = '请先选择年级和类型';
             }
-            confirmBtn.disabled = !(hasGrade && hasType && selectedFile);
+            document.getElementById('confirmBtn').disabled = !(hasGrade && hasType && selectedFile);
         }
 
-        gradeSelect.addEventListener('change', checkCanUpload);
-        typeSelect.addEventListener('change', checkCanUpload);
+        document.getElementById('gradeSelect').addEventListener('change', checkCanUpload);
+        document.getElementById('typeSelect').addEventListener('change', checkCanUpload);
 
         function handleAddFileClick() {
             if (document.getElementById('addFileBtn').classList.contains('disabled')) {
-                showToast(!gradeSelect.value ? '请先选择年级' : '请先选择类型', 'error');
+                showToast(!document.getElementById('gradeSelect').value ? '请先选择年级' : '请先选择类型', 'error');
                 return;
             }
             document.getElementById('fileInput').click();
@@ -950,18 +897,19 @@
                 return;
             }
 
+            const confirmBtn = document.getElementById('confirmBtn');
             confirmBtn.disabled = true;
             confirmBtn.textContent = '上传中...';
             document.getElementById('progressContainer').style.display = 'block';
-            
+
             try {
                 const formData = new FormData();
                 formData.append('file', selectedFile);
-                formData.append('grade', gradeSelect.value);
-                formData.append('type', typeSelect.value);
+                formData.append('grade', document.getElementById('gradeSelect').value);
+                formData.append('type', document.getElementById('typeSelect').value);
 
                 const xhr = new XMLHttpRequest();
-                
+
                 xhr.upload.addEventListener('progress', (e) => {
                     if (e.lengthComputable) {
                         const percent = Math.round((e.loaded / e.total) * 100);
@@ -992,7 +940,7 @@
 
                 xhr.open('POST', `${API_BASE_URL}/api/upload`);
                 xhr.send(formData);
-                
+
             } catch (error) {
                 showToast('上传失败：' + error.message, 'error');
                 confirmBtn.disabled = false;
@@ -1000,7 +948,7 @@
             }
         }
 
-        // 执行实际下载
+        // 下载相关
         function doDownload(url, filename) {
             const link = document.createElement('a');
             link.href = url;
@@ -1011,50 +959,43 @@
             document.body.removeChild(link);
             showToast('开始下载...', 'success');
         }
-        
-        // 密码弹窗相关变量
+
         let pendingDownloadUrl = null;
         let pendingDownloadFilename = null;
-        const passwordModalOverlay = document.getElementById('passwordModalOverlay');
-        const passwordInput = document.getElementById('passwordInput');
-        const passwordConfirmBtn = document.getElementById('passwordConfirmBtn');
 
         function openPasswordModal(url, filename) {
             pendingDownloadUrl = url;
             pendingDownloadFilename = filename;
-            passwordModalOverlay.classList.add('show');
-            passwordInput.value = '';
-            passwordInput.focus();
+            document.getElementById('passwordModalOverlay').classList.add('show');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
         }
-        
+
         function closePasswordModal() {
-            passwordModalOverlay.classList.remove('show');
+            document.getElementById('passwordModalOverlay').classList.remove('show');
             pendingDownloadUrl = null;
             pendingDownloadFilename = null;
         }
-        
+
         function confirmPassword() {
-            const inputPassword = passwordInput.value.trim();
+            const inputPassword = document.getElementById('passwordInput').value.trim();
             if (!inputPassword) {
                 showToast('请输入密码', 'error');
                 return;
             }
-            
-            const url = pendingDownloadUrl;
-            const filename = pendingDownloadFilename;
-            
-            fetch(`${API_BASE_URL}/api/download?key=${encodeURIComponent(url)}&password=${encodeURIComponent(inputPassword)}`)
+
+            fetch(`${API_BASE_URL}/api/download?key=${encodeURIComponent(pendingDownloadUrl)}&password=${encodeURIComponent(inputPassword)}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         closePasswordModal();
-                        if (filename) {
-                            doDownload(data.url, filename);
+                        if (pendingDownloadFilename) {
+                            doDownload(data.url, pendingDownloadFilename);
                         }
                     } else {
                         showToast('密码错误', 'error');
-                        passwordInput.value = '';
-                        passwordInput.focus();
+                        document.getElementById('passwordInput').value = '';
+                        document.getElementById('passwordInput').focus();
                     }
                 })
                 .catch(error => {
@@ -1062,45 +1003,34 @@
                     console.error('Password verification failed:', error);
                 });
         }
-        
-        passwordInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                confirmPassword();
-            }
+
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') confirmPassword();
         });
-        
-        passwordModalOverlay.addEventListener('click', function(e) {
-            if (e.target === passwordModalOverlay) closePasswordModal();
+
+        document.getElementById('passwordModalOverlay').addEventListener('click', function(e) {
+            if (e.target === document.getElementById('passwordModalOverlay')) closePasswordModal();
         });
-        
+
         function removeExtension(filename) {
             const lastDotIndex = filename.lastIndexOf('.');
-            if (lastDotIndex > 0) {
-                return filename.substring(0, lastDotIndex);
-            }
+            if (lastDotIndex > 0) return filename.substring(0, lastDotIndex);
             return filename;
-        }
-        
-        function isXindeCategory(category) {
-            return category === 'xinde';
         }
 
         const fileInfoMap = new Map();
-        
+
         function handleFileClick(fileKey) {
             const fileInfo = fileInfoMap.get(fileKey);
-            if (!fileInfo) {
-                console.error('File info not found for key:', fileKey);
-                return;
-            }
-            
+            if (!fileInfo) return;
+
             if (fileInfo.isXinde) {
                 openPasswordModal(fileInfo.key, fileInfo.name);
             } else {
                 doDownload(fileInfo.url, fileInfo.name);
             }
         }
-        
+
         function renderAllLists() {
             const categories = [
                 { key: 'gaoyi-shijuan', title: '高一试卷' },
@@ -1113,50 +1043,47 @@
                 const listEl = document.getElementById(`list-${cat.key}`);
                 const emptyEl = document.getElementById(`empty-${cat.key}`);
                 const countEl = document.getElementById(`count-${cat.key}`);
-                
+
                 if (listEl && emptyEl && countEl) {
                     const catFiles = files.filter(f => f.category === cat.key);
                     countEl.textContent = catFiles.length;
-                    
+
                     if (catFiles.length === 0) {
                         listEl.innerHTML = '';
                         emptyEl.style.display = 'block';
                     } else {
                         emptyEl.style.display = 'none';
-                        const isXinde = isXindeCategory(cat.key);
+                        const isXinde = cat.key === 'xinde';
                         listEl.innerHTML = '';
-                        
+
                         catFiles.forEach(file => {
                             fileInfoMap.delete(file.cosKey);
                         });
-                        
+
                         catFiles.forEach(file => {
                             const displayName = removeExtension(file.name);
-                            const escapedDisplayName = escapeHtml(displayName);
-                            const escapedName = escapeHtml(file.name);
-                            
                             fileInfoMap.set(file.cosKey, {
                                 url: file.cosUrl,
                                 key: file.cosKey,
                                 name: file.name,
                                 isXinde: isXinde
                             });
-                            
+
                             const li = document.createElement('li');
                             li.className = 'file-item';
                             li.innerHTML = `
-                                <button class="delete-btn" data-key="${file.cosKey}" data-name="${escapedName}">×</button>
-                                <div class="file-name" data-key="${file.cosKey}">${escapedDisplayName}</div>
-                                <div class="file-meta" data-key="${file.cosKey}">${file.size} · ${file.date}</div>
+                                <button class="delete-btn" data-key="${file.cosKey}">×</button>
+                                <div class="file-name">${escapeHtml(displayName)}</div>
+                                <div class="file-meta">${file.size} · ${file.date}</div>
                             `;
-                            
+
                             const fileKey = file.cosKey;
                             li.querySelector('.file-name').addEventListener('click', () => handleFileClick(fileKey));
                             li.querySelector('.delete-btn').addEventListener('click', (e) => {
                                 e.stopPropagation();
                                 deleteFile(fileKey, file.name);
                             });
-                            
+
                             listEl.appendChild(li);
                         });
                     }
@@ -1167,15 +1094,14 @@
         async function deleteFile(key, name) {
             const password = prompt('请输入删除密码：');
             if (!password) return;
-            
             if (!confirm(`确定要删除文件 "${name}" 吗？`)) return;
-            
+
             try {
                 const response = await fetch(`${API_BASE_URL}/api/delete?key=${encodeURIComponent(key)}&password=${encodeURIComponent(password)}`, {
                     method: 'DELETE'
                 });
                 const data = await response.json();
-                
+
                 if (data.success) {
                     showToast('删除成功！', 'success');
                     await loadFiles();
@@ -1202,73 +1128,26 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // 英语角聊天功能
-        const chatModalOverlay = document.getElementById('chatModalOverlay');
+        // ========== 英语角 ==========
         const chatMessages = document.getElementById('chatMessages');
         const chatInput = document.getElementById('chatInput');
         let chatHistory = [];
         let isChatting = false;
 
-        function openChatModal() {
-            chatModalOverlay.classList.add('show');
-            chatInput.focus();
-        }
-
-        function closeChatModal() {
-            chatModalOverlay.classList.remove('show');
-        }
-
-        chatModalOverlay.addEventListener('click', function(e) {
-            if (e.target === chatModalOverlay) closeChatModal();
-        });
-
-        // 语音播放功能
-        let isSpeaking = false;
-        
-        function speakText(text) {
-            if (!window.speechSynthesis) {
-                console.log('浏览器不支持语音合成');
-                return;
-            }
-            
-            window.speechSynthesis.cancel();
-            
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.9;
-            utterance.pitch = 1;
-            
-            utterance.onstart = () => { isSpeaking = true; };
-            utterance.onend = () => { isSpeaking = false; };
-            utterance.onerror = () => { isSpeaking = false; };
-            
-            window.speechSynthesis.speak(utterance);
-        }
-        
-        function stopSpeaking() {
-            if (window.speechSynthesis) {
-                window.speechSynthesis.cancel();
-                isSpeaking = false;
-            }
-        }
-
         function addMessage(text, isUser) {
             const div = document.createElement('div');
             div.className = `chat-message ${isUser ? 'user-message' : 'ai-message'}`;
-            
+
             let html = `<div class="message-bubble">${escapeHtml(text)}</div>`;
-            
             if (!isUser) {
                 html += `<button class="speak-btn" onclick="speakText('${escapeHtml(text).replace(/'/g, "\\'")}')" title="朗读">🔊</button>`;
             }
-            
+
             div.innerHTML = html;
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            if (!isUser) {
-                speakText(text);
-            }
+
+            if (!isUser) speakText(text);
         }
 
         function addTypingIndicator() {
@@ -1276,11 +1155,7 @@
             div.className = 'chat-message ai-message typing-message';
             div.innerHTML = `
                 <div class="message-bubble">
-                    <div class="typing-indicator">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
+                    <div class="typing-indicator"><span></span><span></span><span></span></div>
                 </div>
             `;
             chatMessages.appendChild(div);
@@ -1295,7 +1170,7 @@
             addMessage(message, true);
             chatInput.value = '';
             chatHistory.push({ role: 'user', content: message });
-            
+
             isChatting = true;
             const typingIndicator = addTypingIndicator();
             const sendBtn = document.querySelector('.chat-send-btn');
@@ -1305,7 +1180,7 @@
                 const response = await fetch(`${API_BASE_URL}/api/chat`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         message,
                         history: chatHistory.slice(-10)
                     })
@@ -1313,7 +1188,7 @@
 
                 typingIndicator.remove();
                 const data = await response.json();
-                
+
                 if (data.success) {
                     addMessage(data.reply, false);
                     chatHistory.push({ role: 'assistant', content: data.reply });
@@ -1331,13 +1206,24 @@
             }
         }
 
-        // 语音输入功能
+        // 语音播放
+        function speakText(text) {
+            if (!window.speechSynthesis) return;
+            window.speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 语音输入
         let recognition = null;
         let isRecording = false;
 
         function initVoiceInput() {
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                console.log('浏览器不支持语音识别');
                 document.getElementById('voiceBtn').style.display = 'none';
                 return;
             }
@@ -1367,47 +1253,34 @@
             };
 
             recognition.onerror = (event) => {
-                console.error('语音识别错误:', event.error);
                 isRecording = false;
                 document.getElementById('voiceBtn').classList.remove('recording');
                 document.getElementById('chatInput').placeholder = '输入英语或中文，和 AI 老师对话...';
-                
-                if (event.error === 'not-allowed') {
-                    showToast('请允许使用麦克风权限', 'error');
-                } else if (event.error === 'no-speech') {
-                    showToast('没有检测到语音，请重试', 'error');
-                } else {
-                    showToast('语音识别失败，请重试', 'error');
-                }
+
+                if (event.error === 'not-allowed') showToast('请允许使用麦克风权限', 'error');
+                else if (event.error === 'no-speech') showToast('没有检测到语音，请重试', 'error');
+                else showToast('语音识别失败，请重试', 'error');
             };
         }
 
         function toggleVoiceInput() {
-            if (!recognition) {
-                initVoiceInput();
-            }
+            if (!recognition) initVoiceInput();
 
             if (isRecording) {
                 recognition.stop();
             } else {
                 navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(() => {
-                        recognition.start();
-                    })
-                    .catch((err) => {
-                        console.error('麦克风权限被拒绝:', err);
-                        showToast('请允许使用麦克风权限', 'error');
-                    });
+                    .then(() => recognition.start())
+                    .catch(() => showToast('请允许使用麦克风权限', 'error'));
             }
         }
 
         initVoiceInput();
 
-        modalOverlay.addEventListener('click', function(e) {
-            if (e.target === modalOverlay) closeModal();
+        // 弹窗点击外部关闭
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === document.getElementById('modalOverlay')) closeModal();
         });
-
-        window.onload = init;
     </script>
 </body>
 </html>
