@@ -265,25 +265,29 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: #e07a5f;
-            color: white;
-            border: none;
-            font-size: 28px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 18px;
+            font-weight: 600;
+            font-family: 'Segoe UI', 'PingFang SC', sans-serif;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(224, 122, 95, 0.4);
             transition: all 0.3s;
             z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
+            letter-spacing: 1px;
         }
 
         .upload-trigger-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(224, 122, 95, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.7);
+            transform: scale(1.05);
         }
 
         /* ========== 弹窗样式 ========== */
@@ -691,7 +695,7 @@
             <div class="column" id="gaoyi">
                 <div class="column-header">
                     <span class="column-icon">📖</span>
-                    <span class="column-title">高一试卷</span>
+                    <span class="column-title">我的备课</span>
                     <span class="column-count" id="count-gaoyi-shijuan">0</span>
                 </div>
                 <div class="file-list-container">
@@ -768,7 +772,7 @@
     </section>
 
     <!-- ========== 上传按钮 ========== -->
-    <button class="upload-trigger-btn" onclick="openModal()" title="上传文件" id="uploadBtn" style="display:none;">+</button>
+    <button class="upload-trigger-btn" onclick="openModal()" title="上传文件" id="uploadBtn" style="display:none;">D</button>
 
     <!-- ========== 上传弹窗 ========== -->
     <div class="modal-overlay" id="modalOverlay">
