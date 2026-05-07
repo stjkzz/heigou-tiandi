@@ -1289,8 +1289,8 @@
 
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
-            // 支持中英文混合识别
-            recognition.lang = 'zh-CN';
+            // 默认英文识别（口语练习）
+            recognition.lang = 'en-US';
             recognition.continuous = true;
             recognition.interimResults = true;
 
@@ -1298,14 +1298,14 @@
                 isRecording = true;
                 finalTranscript = '';
                 document.getElementById('voiceBtn').classList.add('recording');
-                document.getElementById('chatInput').placeholder = '🎤 正在听...（说完后点击发送按钮）';
+                document.getElementById('chatInput').placeholder = '🎤 Listening... (tap mic to send)';
                 document.getElementById('chatInput').value = '';
             };
 
             recognition.onend = () => {
                 isRecording = false;
                 document.getElementById('voiceBtn').classList.remove('recording');
-                document.getElementById('chatInput').placeholder = '输入英语或中文，和 AI 老师对话...';
+                document.getElementById('chatInput').placeholder = 'Type or speak English...';
             };
 
             recognition.onresult = (event) => {
@@ -1364,7 +1364,7 @@
                         recognition.start();
                         showToast('🎤 请说话，说完后再次点击麦克风按钮发送', 'success');
                     })
-                    .catch(() => showToast('请允许使用麦克风权限', 'error'));
+                    .catch(() => showToast('Please allow microphone access', 'error'));
             }
         }
 
