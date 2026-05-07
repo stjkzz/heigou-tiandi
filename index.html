@@ -1289,10 +1289,12 @@
 
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
-            // 默认英文识别（口语练习）
+            // 强制英文识别（口语练习）
             recognition.lang = 'en-US';
             recognition.continuous = true;
             recognition.interimResults = true;
+            // iPad Safari 需要设置 maxAlternatives 来获取更准确的结果
+            recognition.maxAlternatives = 1;
 
             recognition.onstart = () => {
                 isRecording = true;
@@ -1313,6 +1315,16 @@
                 
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     const transcript = event.results[i][0].transcript;
+                    // 检测是否是中文（简单检测中文字符）
+                    const hasChinese = /[\u4e00-\u9fa5]/.test(transcript);
+                    
+                    if (hasChinese) {
+                        // 如果识别出中文，可能是语言设置没生效，提示用户
+                        showToast('Please speak English', 'error');
+                        document.getElementById('chatInput').placeholder = 'Please speak English...';
+                        return;
+                    }
+                    
                     if (event.results[i].isFinal) {
                         finalTranscript += transcript;
                     } else {
