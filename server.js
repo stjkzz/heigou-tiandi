@@ -65,11 +65,17 @@ app.get('/api/files', async (req, res) => {
     }
 });
 
-// 上传文件
+// 上传文件（需要密码验证）
 app.post('/api/upload', upload.single('file'), async (req, res) => {
     try {
-        const { grade, type } = req.body;
+        const { grade, type, password } = req.body;
         const file = req.file;
+        
+        // 验证上传密码
+        const correctPassword = process.env.DELETE_PASSWORD || 'mami';
+        if (password !== correctPassword) {
+            return res.status(403).json({ success: false, error: '上传密码错误' });
+        }
         
         if (!file) {
             return res.status(400).json({ success: false, error: '没有文件' });

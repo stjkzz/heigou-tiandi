@@ -775,6 +775,10 @@
         <div class="modal">
             <h2 class="modal-title">上传文档</h2>
             <div class="form-group">
+                <label>上传密码</label>
+                <input type="password" id="uploadPassword" placeholder="请输入上传密码" maxlength="20">
+            </div>
+            <div class="form-group">
                 <label>选择年级</label>
                 <select id="gradeSelect">
                     <option value="">-- 请选择 --</option>
@@ -796,7 +800,7 @@
                 <div class="add-file-btn disabled" id="addFileBtn" onclick="handleAddFileClick()">
                     <div style="font-size: 28px; margin-bottom: 8px;">➕</div>
                     <div id="addFileText">请先选择年级和类型</div>
-                    <div style="font-size: 12px; color: #888; margin-top: 6px;">支持 .docx, .doc 格式</div>
+                    <div style="font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 6px;">支持 .docx, .doc 格式</div>
                 </div>
                 <input type="file" id="fileInput" accept=".docx,.doc" style="display: none;">
             </div>
@@ -804,7 +808,7 @@
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
-                <p style="text-align: center; margin-top: 10px; color: #888; font-size: 13px;" id="progressText">上传中...</p>
+                <p style="text-align: center; margin-top: 10px; color: rgba(255,255,255,0.5); font-size: 13px;" id="progressText">上传中...</p>
             </div>
             <div class="modal-buttons">
                 <button class="modal-btn btn-cancel" onclick="closeModal()">取消</button>
@@ -892,6 +896,7 @@
         }
 
         function checkCanUpload() {
+            const hasPassword = document.getElementById('uploadPassword').value.trim() !== '';
             const hasGrade = document.getElementById('gradeSelect').value !== '';
             const hasType = document.getElementById('typeSelect').value !== '';
             const btn = document.getElementById('addFileBtn');
@@ -903,9 +908,10 @@
                 btn.classList.add('disabled');
                 document.getElementById('addFileText').textContent = '请先选择年级和类型';
             }
-            document.getElementById('confirmBtn').disabled = !(hasGrade && hasType && selectedFile);
+            document.getElementById('confirmBtn').disabled = !(hasPassword && hasGrade && hasType && selectedFile);
         }
 
+        document.getElementById('uploadPassword').addEventListener('input', checkCanUpload);
         document.getElementById('gradeSelect').addEventListener('change', checkCanUpload);
         document.getElementById('typeSelect').addEventListener('change', checkCanUpload);
 
@@ -935,6 +941,12 @@
                 return;
             }
 
+            const uploadPassword = document.getElementById('uploadPassword').value.trim();
+            if (!uploadPassword) {
+                showToast('请输入上传密码', 'error');
+                return;
+            }
+
             const confirmBtn = document.getElementById('confirmBtn');
             confirmBtn.disabled = true;
             confirmBtn.textContent = '上传中...';
@@ -945,6 +957,7 @@
                 formData.append('file', selectedFile);
                 formData.append('grade', document.getElementById('gradeSelect').value);
                 formData.append('type', document.getElementById('typeSelect').value);
+                formData.append('password', uploadPassword);
 
                 const xhr = new XMLHttpRequest();
 
