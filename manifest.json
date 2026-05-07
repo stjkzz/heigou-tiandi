@@ -1,0 +1,22 @@
+{
+  "name": "黑狗天地",
+  "short_name": "黑狗天地",
+  "description": "资料心得与英语角",
+  "start_url": "/heigou-tiandi/",
+  "display": "standalone",
+  "background_color": "#1a1a1a",
+  "theme_color": "#e07a5f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "bg-deer-compressed.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "bg-deer-compressed.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
