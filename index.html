@@ -1221,23 +1221,28 @@
         // 语音输入
         let recognition = null;
         let isRecording = false;
+        let finalTranscript = '';
 
         function initVoiceInput() {
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
                 document.getElementById('voiceBtn').style.display = 'none';
+                showToast('您的浏览器不支持语音输入，请手动输入文字', 'error');
                 return;
             }
 
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
-            recognition.lang = 'en-US';
-            recognition.continuous = false;
-            recognition.interimResults = false;
+            // 支持中英文混合识别
+            recognition.lang = 'zh-CN';
+            recognition.continuous = true;
+            recognition.interimResults = true;
 
             recognition.onstart = () => {
                 isRecording = true;
+                finalTranscript = '';
                 document.getElementById('voiceBtn').classList.add('recording');
-                document.getElementById('chatInput').placeholder = '正在听你说英语...';
+                document.getElementById('chatInput').placeholder = '🎤 正在听...（说完后点击发送按钮）';
+                document.getElementById('chatInput').value = '';
             };
 
             recognition.onend = () => {
@@ -1247,19 +1252,40 @@
             };
 
             recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                document.getElementById('chatInput').value = transcript;
-                sendChatMessage();
+                let interimTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                
+                // 显示识别中的文字，让小孩看到识别到了什么
+                document.getElementById('chatInput').value = finalTranscript + interimTranscript;
             };
 
             recognition.onerror = (event) => {
-                isRecording = false;
-                document.getElementById('voiceBtn').classList.remove('recording');
-                document.getElementById('chatInput').placeholder = '输入英语或中文，和 AI 老师对话...';
-
-                if (event.error === 'not-allowed') showToast('请允许使用麦克风权限', 'error');
-                else if (event.error === 'no-speech') showToast('没有检测到语音，请重试', 'error');
-                else showToast('语音识别失败，请重试', 'error');
+                console.error('语音识别错误:', event.error);
+                
+                if (event.error === 'not-allowed') {
+                    showToast('请允许使用麦克风权限', 'error');
+                    isRecording = false;
+                    document.getElementById('voiceBtn').classList.remove('recording');
+                } else if (event.error === 'no-speech') {
+                    // 没检测到语音，只是提示，不停止录音
+                    showToast('没有检测到语音，请靠近麦克风说话', 'error');
+                } else if (event.error === 'network') {
+                    showToast('网络错误，请检查网络后重试', 'error');
+                    isRecording = false;
+                    document.getElementById('voiceBtn').classList.remove('recording');
+                } else {
+                    showToast('语音识别出错: ' + event.error, 'error');
+                    isRecording = false;
+                    document.getElementById('voiceBtn').classList.remove('recording');
+                }
             };
         }
 
@@ -1267,10 +1293,20 @@
             if (!recognition) initVoiceInput();
 
             if (isRecording) {
+                // 停止录音，如果有识别内容就发送
                 recognition.stop();
+                const text = document.getElementById('chatInput').value.trim();
+                if (text) {
+                    sendChatMessage();
+                } else {
+                    showToast('没有识别到语音，请重试', 'error');
+                }
             } else {
                 navigator.mediaDevices.getUserMedia({ audio: true })
-                    .then(() => recognition.start())
+                    .then(() => {
+                        recognition.start();
+                        showToast('🎤 请说话，说完后再次点击麦克风按钮发送', 'success');
+                    })
                     .catch(() => showToast('请允许使用麦克风权限', 'error'));
             }
         }
