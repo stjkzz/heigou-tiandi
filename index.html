@@ -542,6 +542,18 @@
 
         .speak-btn:hover { color: #e07a5f; }
 
+        .show-text-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 8px;
+            padding: 4px;
+        }
+
+        .show-text-btn:hover { color: #e07a5f; }
+
         .chat-input-area {
             padding: 20px 40px;
             border-top: 1px solid rgba(255, 255, 255, 0.15);
@@ -1209,12 +1221,19 @@
             const div = document.createElement('div');
             div.className = `chat-message ${isUser ? 'user-message' : 'ai-message'}`;
 
-            let html = `<div class="message-bubble">${escapeHtml(text)}</div>`;
-            if (!isUser) {
-                html += `<button class="speak-btn" onclick="speakText('${escapeHtml(text).replace(/'/g, "\\'")}')" title="朗读">🔊</button>`;
+            if (isUser) {
+                // 用户消息直接显示
+                div.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
+            } else {
+                // AI 消息默认隐藏文字，只显示语音按钮和"显示文字"按钮
+                const messageId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                div.innerHTML = `
+                    <div class="message-bubble" id="${messageId}" style="display:none;">${escapeHtml(text)}</div>
+                    <button class="speak-btn" onclick="speakText('${escapeHtml(text).replace(/'/g, "\\'")}')" title="朗读">🔊</button>
+                    <button class="show-text-btn" onclick="document.getElementById('${messageId}').style.display='block';this.style.display='none';" title="显示文字">👁️</button>
+                `;
             }
 
-            div.innerHTML = html;
             chatMessages.appendChild(div);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
