@@ -1007,14 +1007,29 @@
 
         // 下载相关
         function doDownload(url, filename) {
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            showToast('开始下载...', 'success');
+            // 方法1: 尝试使用 fetch + blob 下载（兼容性好）
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('下载失败');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+                    showToast('开始下载...', 'success');
+                })
+                .catch(error => {
+                    // 方法2: 如果 fetch 失败，直接用 window.open
+                    console.error('Fetch download failed:', error);
+                    window.open(url, '_blank');
+                    showToast('开始下载...', 'success');
+                });
         }
 
         let pendingDownloadUrl = null;
