@@ -13,19 +13,6 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // 不缓存 API 请求
-  if (event.request.url.includes('/api/')) {
+    // 不缓存任何请求，直接走网络
     event.respondWith(fetch(event.request));
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
-  );
 });
