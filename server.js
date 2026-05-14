@@ -119,23 +119,19 @@ app.get('/api/download', async (req, res) => {
             console.log('Password correct');
         }
         
-        // 使用腾讯云 COS 生成带签名的临时下载 URL（有效期 5 分钟）
-        console.log('Generating signed URL for key:', key);
-        const urlResult = cos.getObjectUrl({
-            Bucket: BUCKET,
-            Region: REGION,
-            Key: key,
-            Sign: true,
-            Expires: 300  // 5 分钟有效期
-        });
+        // 生成下载 URL（直接拼接，bucket 需要是公共读的）
+        console.log('Generating URL for key:', key);
         
-        console.log('Generated URL:', urlResult.Url ? 'success' : 'empty');
+        // 只编码文件名部分，保留路径分隔符 /
+        const keyParts = key.split('/');
+        const encodedFileName = encodeURIComponent(keyParts[keyParts.length - 1]);
+        keyParts[keyParts.length - 1] = encodedFileName;
+        const encodedKey = keyParts.join('/');
         
-        if (!urlResult.Url) {
-            return res.status(500).json({ success: false, error: '生成下载链接失败' });
-        }
+        const url = `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodedKey}`;
+        console.log('Generated URL:', url);
         
-        res.json({ success: true, url: urlResult.Url });
+        res.json({ success: true, url: url });
     } catch (error) {
         console.error('Download error:', error);
         res.status(500).json({ success: false, error: error.message });
