@@ -106,16 +106,22 @@ app.get('/api/download', async (req, res) => {
     try {
         const { key, password } = req.query;
         
+        console.log('Download request - key:', key, 'password provided:', !!password);
+        
         // 判断是否是心得文件
         if (key.includes('/xinde/')) {
             const correctPassword = process.env.DELETE_PASSWORD || 'mami';
+            console.log('Xinde file detected, checking password...');
             if (password !== correctPassword) {
+                console.log('Password incorrect');
                 return res.status(403).json({ success: false, error: '密码错误' });
             }
+            console.log('Password correct');
         }
         
         // 使用腾讯云 COS 生成带签名的临时下载 URL（有效期 5 分钟）
-        const urlResult = await cos.getObjectUrl({
+        console.log('Generating signed URL for key:', key);
+        const urlResult = cos.getObjectUrl({
             Bucket: BUCKET,
             Region: REGION,
             Key: key,
@@ -123,8 +129,15 @@ app.get('/api/download', async (req, res) => {
             Expires: 300  // 5 分钟有效期
         });
         
+        console.log('Generated URL:', urlResult.Url ? 'success' : 'empty');
+        
+        if (!urlResult.Url) {
+            return res.status(500).json({ success: false, error: '生成下载链接失败' });
+        }
+        
         res.json({ success: true, url: urlResult.Url });
     } catch (error) {
+        console.error('Download error:', error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
