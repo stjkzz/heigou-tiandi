@@ -33,11 +33,12 @@ app.get('/api/files', async (req, res) => {
         });
         
         const files = result.Contents.map(item => {
-            const parts = item.Key.split('/');
+            // 正确处理中文文件名（getBucket 返回的 Key 可能是 URL 编码的）
+            const decodedKey = decodeURIComponent(item.Key);
+            const parts = decodedKey.split('/');
             if (parts.length < 3) return null;
             
-            // 正确处理中文文件名
-            const rawFileName = decodeURIComponent(parts[parts.length - 1]);
+            const rawFileName = parts[parts.length - 1];
             const fileName = rawFileName.replace(/^\d+_/, '');
             const grade = parts[0] === 'gaoyi' ? '高一' : parts[0] === 'gaoer' ? '高二' : '高三';
             const type = parts[1] === 'xinde' ? '心得' : '试卷';
@@ -48,8 +49,8 @@ app.get('/api/files', async (req, res) => {
             
             return {
                 name: displayName,
-                cosKey: item.Key,
-                cosUrl: `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodeURIComponent(item.Key)}`,
+                cosKey: decodedKey,
+                cosUrl: `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodeURIComponent(decodedKey)}`,
                 category: category,
                 size: formatFileSize(item.Size),
                 date: new Date(item.LastModified).toLocaleDateString('zh-CN'),
