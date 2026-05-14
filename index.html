@@ -1057,10 +1057,12 @@
                 .then(data => {
                     console.log('Download API response:', data);
                     if (data.success) {
+                        // 先保存文件名，再关闭弹窗（关闭弹窗会清空变量）
+                        const filename = pendingDownloadFilename;
                         closePasswordModal();
-                        if (pendingDownloadFilename) {
-                            console.log('Calling doDownload with url:', data.url);
-                            doDownload(data.url, pendingDownloadFilename);
+                        if (filename) {
+                            console.log('Calling doDownload with url:', data.url, 'filename:', filename);
+                            doDownload(data.url, filename);
                         } else {
                             console.log('No pendingDownloadFilename');
                         }
