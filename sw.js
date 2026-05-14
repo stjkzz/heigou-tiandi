@@ -1,4 +1,4 @@
-const CACHE_NAME = 'heigou-tiandi-v1';
+const CACHE_NAME = 'heigou-tiandi-v2';
 const urlsToCache = [
   '/heigou-tiandi/',
   '/heigou-tiandi/index.html',
