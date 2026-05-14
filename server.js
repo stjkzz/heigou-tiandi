@@ -120,13 +120,16 @@ app.get('/api/download', async (req, res) => {
             }
         }
         
-        // 只编码文件名部分，保留路径分隔符 /
-        const downloadKeyParts = key.split('/');
-        const downloadEncodedFileName = encodeURIComponent(downloadKeyParts[downloadKeyParts.length - 1]);
-        downloadKeyParts[downloadKeyParts.length - 1] = downloadEncodedFileName;
-        const downloadEncodedKey = downloadKeyParts.join('/');
-        const url = `https://${BUCKET}.cos.${REGION}.myqcloud.com/${downloadEncodedKey}`;
-        res.json({ success: true, url });
+        // 使用腾讯云 COS 生成带签名的临时下载 URL（有效期 5 分钟）
+        const urlResult = await cos.getObjectUrl({
+            Bucket: BUCKET,
+            Region: REGION,
+            Key: key,
+            Sign: true,
+            Expires: 300  // 5 分钟有效期
+        });
+        
+        res.json({ success: true, url: urlResult.Url });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
