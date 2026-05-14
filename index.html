@@ -1007,8 +1007,16 @@
 
         // 下载相关
         function doDownload(url, filename) {
-            // 直接打开 URL，让浏览器处理下载
-            window.open(url, '_blank');
+            // 创建 iframe 下载，避免弹窗拦截
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = url;
+            document.body.appendChild(iframe);
+            
+            setTimeout(() => {
+                document.body.removeChild(iframe);
+            }, 5000);
+            
             showToast('开始下载...', 'success');
         }
 
