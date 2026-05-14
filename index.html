@@ -1402,12 +1402,12 @@
             if (e.target === document.getElementById('modalOverlay')) closeModal();
         });
 
-        // 注册 Service Worker（PWA）
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then((reg) => console.log('SW registered:', reg.scope))
-                .catch((err) => console.log('SW registration failed:', err));
-        }
+        // 注册 Service Worker（PWA）- 临时禁用，解决缓存问题
+        // if ('serviceWorker' in navigator) {
+        //     navigator.serviceWorker.register('sw.js')
+        //         .then((reg) => console.log('SW registered:', reg.scope))
+        //         .catch((err) => console.log('SW registration failed:', err));
+        // }
     </script>
 </body>
 </html>
