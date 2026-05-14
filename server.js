@@ -46,10 +46,16 @@ app.get('/api/files', async (req, res) => {
             const category = type === '心得' ? 'xinde' : parts[0] + '-' + parts[1];
             const displayName = type === '心得' ? `[${grade}] ${fileName}` : fileName;
             
+            // 只编码文件名部分，保留路径分隔符 /
+            const keyParts = item.Key.split('/');
+            const encodedFileName = encodeURIComponent(keyParts[keyParts.length - 1]);
+            keyParts[keyParts.length - 1] = encodedFileName;
+            const encodedKey = keyParts.join('/');
+            
             return {
                 name: displayName,
                 cosKey: item.Key,
-                cosUrl: `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodeURIComponent(item.Key)}`,
+                cosUrl: `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodedKey}`,
                 category: category,
                 size: formatFileSize(item.Size),
                 date: new Date(item.LastModified).toLocaleDateString('zh-CN'),
@@ -114,7 +120,12 @@ app.get('/api/download', async (req, res) => {
             }
         }
         
-        const url = `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodeURIComponent(key)}`;
+        // 只编码文件名部分，保留路径分隔符 /
+        const downloadKeyParts = key.split('/');
+        const downloadEncodedFileName = encodeURIComponent(downloadKeyParts[downloadKeyParts.length - 1]);
+        downloadKeyParts[downloadKeyParts.length - 1] = downloadEncodedFileName;
+        const downloadEncodedKey = downloadKeyParts.join('/');
+        const url = `https://${BUCKET}.cos.${REGION}.myqcloud.com/${downloadEncodedKey}`;
         res.json({ success: true, url });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
