@@ -1007,14 +1007,19 @@
 
         // 下载相关
         function doDownload(url, filename) {
-            // 创建 iframe 下载，避免弹窗拦截
+            // 对 URL 中的中文进行编码
+            const encodedUrl = encodeURI(url);
+            
+            // 创建 iframe 下载
             const iframe = document.createElement('iframe');
             iframe.style.display = 'none';
-            iframe.src = url;
+            iframe.src = encodedUrl;
             document.body.appendChild(iframe);
             
             setTimeout(() => {
-                document.body.removeChild(iframe);
+                if (iframe.parentNode) {
+                    document.body.removeChild(iframe);
+                }
             }, 5000);
             
             showToast('开始下载...', 'success');
