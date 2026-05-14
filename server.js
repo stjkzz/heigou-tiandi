@@ -185,7 +185,7 @@ app.post('/api/chat', async (req, res) => {
         
         // 构建 messages
         const messages = [
-            { role: 'system', content: 'You are a helpful English teacher. Help the user practice English. If they write in Chinese, explain in Chinese but encourage them to use English. Correct their grammar mistakes gently.' },
+            { role: 'system', content: 'You are an English teacher for Chinese students. You MUST reply in English ONLY. If the student speaks Chinese, reply in English and gently encourage them to speak English. Correct their grammar mistakes. Keep responses simple and clear, suitable for high school students.' },
             ...history,
             { role: 'user', content: message }
         ];
