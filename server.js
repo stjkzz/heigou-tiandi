@@ -33,8 +33,12 @@ app.get('/api/files', async (req, res) => {
         });
         
         const files = result.Contents.map(item => {
+            console.log('Raw item.Key:', item.Key);
+            
             // 正确处理中文文件名（getBucket 返回的 Key 可能是 URL 编码的）
             const decodedKey = decodeURIComponent(item.Key);
+            console.log('Decoded key:', decodedKey);
+            
             const parts = decodedKey.split('/');
             if (parts.length < 3) return null;
             
