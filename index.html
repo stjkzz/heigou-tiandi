@@ -1009,21 +1009,14 @@
         function doDownload(url, filename) {
             console.log('doDownload called with url:', url, 'filename:', filename);
             
-            // 对 URL 中的中文进行编码
-            const encodedUrl = encodeURI(url);
-            console.log('Encoded URL:', encodedUrl);
-            
-            // 创建 iframe 下载
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = encodedUrl;
-            document.body.appendChild(iframe);
-            
-            setTimeout(() => {
-                if (iframe.parentNode) {
-                    document.body.removeChild(iframe);
-                }
-            }, 5000);
+            // 使用 form 提交下载，兼容性最好
+            const form = document.createElement('form');
+            form.method = 'GET';
+            form.action = encodeURI(url);
+            form.style.display = 'none';
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
             
             showToast('开始下载...', 'success');
         }
