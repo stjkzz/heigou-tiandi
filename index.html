@@ -1007,8 +1007,11 @@
 
         // 下载相关
         function doDownload(url, filename) {
+            console.log('doDownload called with url:', url, 'filename:', filename);
+            
             // 对 URL 中的中文进行编码
             const encodedUrl = encodeURI(url);
+            console.log('Encoded URL:', encodedUrl);
             
             // 创建 iframe 下载
             const iframe = document.createElement('iframe');
@@ -1052,10 +1055,14 @@
             fetch(`${API_BASE_URL}/api/download?key=${encodeURIComponent(pendingDownloadUrl)}&password=${encodeURIComponent(inputPassword)}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Download API response:', data);
                     if (data.success) {
                         closePasswordModal();
                         if (pendingDownloadFilename) {
+                            console.log('Calling doDownload with url:', data.url);
                             doDownload(data.url, pendingDownloadFilename);
+                        } else {
+                            console.log('No pendingDownloadFilename');
                         }
                     } else {
                         showToast('密码错误', 'error');
