@@ -768,8 +768,9 @@
         </div>
         <div class="chat-input-area">
             <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="语音输入">🎤</button>
-            <input type="text" class="chat-input" id="chatInput" placeholder="输入英语或中文，和 AI 老师对话..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-            <button class="chat-send-btn" onclick="sendChatMessage()">发送</button>
+            <!-- 隐藏文字输入和发送按钮，只保留语音 -->
+            <input type="text" class="chat-input" id="chatInput" placeholder="输入英语或中文，和 AI 老师对话..." onkeypress="if(event.key==='Enter') sendChatMessage()" style="display:none;">
+            <button class="chat-send-btn" onclick="sendChatMessage()" style="display:none;">发送</button>
         </div>
     </section>
 
@@ -1375,19 +1376,26 @@
             if (!recognition) initVoiceInput();
 
             if (isRecording) {
-                // 停止录音，如果有识别内容就发送
+                // 停止录音
                 recognition.stop();
-                const text = document.getElementById('chatInput').value.trim();
-                if (text) {
-                    sendChatMessage();
-                } else {
-                    showToast('没有识别到语音，请重试', 'error');
-                }
+                
+                // 等待语音识别完成，然后自动发送
+                setTimeout(() => {
+                    const text = document.getElementById('chatInput').value.trim();
+                    if (text) {
+                        sendChatMessage();
+                        // 发送后清空输入框
+                        document.getElementById('chatInput').value = '';
+                        finalTranscript = '';
+                    } else {
+                        showToast('没有识别到语音，请重试', 'error');
+                    }
+                }, 500); // 给语音识别一点时间完成
             } else {
                 navigator.mediaDevices.getUserMedia({ audio: true })
                     .then(() => {
                         recognition.start();
-                        showToast('🎤 请说话，说完后再次点击麦克风按钮发送', 'success');
+                        showToast('🎤 请说英语，说完后再次点击麦克风发送', 'success');
                     })
                     .catch(() => showToast('Please allow microphone access', 'error'));
             }
