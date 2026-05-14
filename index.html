@@ -1009,10 +1009,13 @@
         function doDownload(url, filename) {
             console.log('doDownload called with url:', url, 'filename:', filename);
             
-            // 使用 form 提交下载，兼容性最好
+            // URL 已经是编码过的，不要再次编码
+            const finalUrl = url;
+            
+            // 使用 form 提交下载
             const form = document.createElement('form');
             form.method = 'GET';
-            form.action = encodeURI(url);
+            form.action = finalUrl;
             form.style.display = 'none';
             document.body.appendChild(form);
             form.submit();
