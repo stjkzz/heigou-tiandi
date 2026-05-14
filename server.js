@@ -46,16 +46,10 @@ app.get('/api/files', async (req, res) => {
             const category = type === '心得' ? 'xinde' : parts[0] + '-' + parts[1];
             const displayName = type === '心得' ? `[${grade}] ${fileName}` : fileName;
             
-            // 只编码文件名部分，保留路径分隔符 /
-            const keyParts = item.Key.split('/');
-            const encodedFileName = encodeURIComponent(keyParts[keyParts.length - 1]);
-            keyParts[keyParts.length - 1] = encodedFileName;
-            const encodedKey = keyParts.join('/');
-            
             return {
                 name: displayName,
                 cosKey: item.Key,
-                cosUrl: `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodedKey}`,
+                cosUrl: `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodeURIComponent(item.Key)}`,
                 category: category,
                 size: formatFileSize(item.Size),
                 date: new Date(item.LastModified).toLocaleDateString('zh-CN'),
