@@ -1157,6 +1157,9 @@
                 return;
             }
 
+            const password = prompt('请输入发布密码：');
+            if (!password) return;
+
             const btn = document.getElementById('postSubmitBtn');
             btn.disabled = true;
             btn.textContent = '发布中...';
@@ -1169,6 +1172,7 @@
                     formData.append('file', img.file);
                     formData.append('grade', '动态');
                     formData.append('type', '图片');
+                    formData.append('password', password);
 
                     const res = await fetch(`${API_BASE_URL}/api/upload`, {
                         method: 'POST',
@@ -1181,22 +1185,28 @@
                     }
                 }
 
-                // 保存动态到 localStorage
-                const posts = JSON.parse(localStorage.getItem('heigou_posts') || '[]');
-                posts.unshift({
-                    id: Date.now(),
-                    text: text,
-                    images: imageUrls,
-                    time: new Date().toISOString()
+                // 保存动态到后端
+                const res = await fetch(`${API_BASE_URL}/api/posts`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: text,
+                        images: imageUrls,
+                        password: password
+                    })
                 });
-                localStorage.setItem('heigou_posts', JSON.stringify(posts));
+                const data = await res.json();
 
-                // 清空输入
-                document.getElementById('postText').value = '';
-                postImages = [];
-                renderPostPreview();
-                renderFeed();
-                showToast('发布成功', 'success');
+                if (data.success) {
+                    // 清空输入
+                    document.getElementById('postText').value = '';
+                    postImages = [];
+                    renderPostPreview();
+                    await renderFeed();
+                    showToast('发布成功', 'success');
+                } else {
+                    showToast('发布失败: ' + data.error, 'error');
+                }
             } catch (error) {
                 showToast('发布失败: ' + error.message, 'error');
             } finally {
@@ -1205,52 +1215,88 @@
             }
         }
 
-        function renderFeed() {
+        async function renderFeed() {
             const container = document.getElementById('feedContainer');
-            const posts = JSON.parse(localStorage.getItem('heigou_posts') || '[]');
 
-            if (posts.length === 0) {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/posts`);
+                const data = await res.json();
+
+                if (!data.success) {
+                    container.innerHTML = `
+                        <div class="feed-empty">
+                            <div>⚠️</div>
+                            <p>加载失败，请刷新重试</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const posts = data.posts || [];
+
+                if (posts.length === 0) {
+                    container.innerHTML = `
+                        <div class="feed-empty">
+                            <div>📝</div>
+                            <p>还没有动态，写第一条吧</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = posts.map(post => {
+                    const date = new Date(post.time);
+                    const timeStr = `${date.getMonth()+1}月${date.getDate()}日 ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+                    const imgClass = post.images && post.images.length === 1 ? 'single' : '';
+                    const imagesHtml = post.images && post.images.length > 0
+                        ? `<div class="feed-images ${imgClass}">${post.images.map(url => `<img src="${url}" onclick="openImageModal('${url}')">`).join('')}</div>`
+                        : '';
+
+                    return `
+                        <div class="feed-item">
+                            <div class="feed-header">
+                                <div class="feed-avatar">🐕</div>
+                                <div class="feed-meta">
+                                    <div class="feed-author">黑狗</div>
+                                    <div class="feed-time">${timeStr}</div>
+                                </div>
+                                <button class="feed-delete-btn" onclick="deletePost(${post.id})">🗑️</button>
+                            </div>
+                            ${post.text ? `<div class="feed-content">${escapeHtml(post.text)}</div>` : ''}
+                            ${imagesHtml}
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
                 container.innerHTML = `
                     <div class="feed-empty">
-                        <div>📝</div>
-                        <p>还没有动态，写第一条吧</p>
+                        <div>⚠️</div>
+                        <p>加载失败，请检查网络</p>
                     </div>
                 `;
-                return;
             }
-
-            container.innerHTML = posts.map(post => {
-                const date = new Date(post.time);
-                const timeStr = `${date.getMonth()+1}月${date.getDate()}日 ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
-                const imgClass = post.images && post.images.length === 1 ? 'single' : '';
-                const imagesHtml = post.images && post.images.length > 0
-                    ? `<div class="feed-images ${imgClass}">${post.images.map(url => `<img src="${url}" onclick="openImageModal('${url}')">`).join('')}</div>`
-                    : '';
-
-                return `
-                    <div class="feed-item">
-                        <div class="feed-header">
-                            <div class="feed-avatar">🐕</div>
-                            <div class="feed-meta">
-                                <div class="feed-author">黑狗</div>
-                                <div class="feed-time">${timeStr}</div>
-                            </div>
-                            <button class="feed-delete-btn" onclick="deletePost(${post.id})">🗑️</button>
-                        </div>
-                        ${post.text ? `<div class="feed-content">${escapeHtml(post.text)}</div>` : ''}
-                        ${imagesHtml}
-                    </div>
-                `;
-            }).join('');
         }
 
-        function deletePost(id) {
+        async function deletePost(id) {
             if (!confirm('确定删除这条动态？')) return;
-            let posts = JSON.parse(localStorage.getItem('heigou_posts') || '[]');
-            posts = posts.filter(p => p.id !== id);
-            localStorage.setItem('heigou_posts', JSON.stringify(posts));
-            renderFeed();
-            showToast('已删除', 'success');
+            const password = prompt('请输入删除密码：');
+            if (!password) return;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/posts/${id}?password=${encodeURIComponent(password)}`, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    await renderFeed();
+                    showToast('已删除', 'success');
+                } else {
+                    showToast('删除失败: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showToast('删除失败: ' + error.message, 'error');
+            }
         }
 
         function openImageModal(url) {

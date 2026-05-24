@@ -143,6 +143,127 @@ app.get('/api/download', async (req, res) => {
     }
 });
 
+// ========== 动态相关接口 ==========
+const POSTS_KEY = 'posts/posts.json';
+
+// 获取动态列表
+app.get('/api/posts', async (req, res) => {
+    try {
+        const result = await cos.getObject({
+            Bucket: BUCKET,
+            Region: REGION,
+            Key: POSTS_KEY
+        });
+        const posts = JSON.parse(result.Body.toString());
+        res.json({ success: true, posts });
+    } catch (error) {
+        if (error.statusCode === 404) {
+            // 文件不存在，返回空数组
+            res.json({ success: true, posts: [] });
+        } else {
+            console.error('获取动态失败:', error);
+            res.status(500).json({ success: false, error: error.message });
+        }
+    }
+});
+
+// 发布动态
+app.post('/api/posts', async (req, res) => {
+    try {
+        const { text, images, password } = req.body;
+
+        // 验证密码
+        const correctPassword = process.env.DELETE_PASSWORD || 'mami';
+        if (password !== correctPassword) {
+            return res.status(403).json({ success: false, error: '密码错误' });
+        }
+
+        if (!text && (!images || images.length === 0)) {
+            return res.status(400).json({ success: false, error: '内容不能为空' });
+        }
+
+        // 读取现有动态
+        let posts = [];
+        try {
+            const result = await cos.getObject({
+                Bucket: BUCKET,
+                Region: REGION,
+                Key: POSTS_KEY
+            });
+            posts = JSON.parse(result.Body.toString());
+        } catch (err) {
+            if (err.statusCode !== 404) throw err;
+        }
+
+        // 添加新动态
+        const newPost = {
+            id: Date.now(),
+            text: text || '',
+            images: images || [],
+            time: new Date().toISOString()
+        };
+        posts.unshift(newPost);
+
+        // 保存到 COS
+        await cos.putObject({
+            Bucket: BUCKET,
+            Region: REGION,
+            Key: POSTS_KEY,
+            Body: JSON.stringify(posts, null, 2),
+            ContentType: 'application/json'
+        });
+
+        res.json({ success: true, post: newPost });
+    } catch (error) {
+        console.error('发布动态失败:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+// 删除动态
+app.delete('/api/posts/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { password } = req.query;
+
+        // 验证密码
+        const correctPassword = process.env.DELETE_PASSWORD || 'mami';
+        if (password !== correctPassword) {
+            return res.status(403).json({ success: false, error: '密码错误' });
+        }
+
+        // 读取现有动态
+        let posts = [];
+        try {
+            const result = await cos.getObject({
+                Bucket: BUCKET,
+                Region: REGION,
+                Key: POSTS_KEY
+            });
+            posts = JSON.parse(result.Body.toString());
+        } catch (err) {
+            if (err.statusCode !== 404) throw err;
+        }
+
+        // 删除指定动态
+        posts = posts.filter(p => p.id !== parseInt(id));
+
+        // 保存到 COS
+        await cos.putObject({
+            Bucket: BUCKET,
+            Region: REGION,
+            Key: POSTS_KEY,
+            Body: JSON.stringify(posts, null, 2),
+            ContentType: 'application/json'
+        });
+
+        res.json({ success: true, message: '删除成功' });
+    } catch (error) {
+        console.error('删除动态失败:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // 删除文件（需要密码验证）
 app.delete('/api/delete', async (req, res) => {
     try {
