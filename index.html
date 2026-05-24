@@ -21,7 +21,7 @@
             position: relative;
             width: 100%;
             min-height: 100vh;
-            background: url('bg-deer-compressed.jpg') center/cover no-repeat;
+            background: url('bg-deer.jpg') center/cover no-repeat;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -92,11 +92,11 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
 
-        /* ========== 资料心得页面 ========== */
+        /* ========== 动态页面 ========== */
         .page-section {
             display: none;
             min-height: 100vh;
-            background: url('bg-deer-compressed.jpg') center/cover no-repeat fixed;
+            background: url('bg-deer.jpg') center/cover no-repeat fixed;
             color: white;
             padding: 60px 40px;
             position: relative;
@@ -121,7 +121,7 @@
         }
 
         .page-header {
-            max-width: 1400px;
+            max-width: 800px;
             margin: 0 auto 40px;
             display: flex;
             align-items: center;
@@ -150,15 +150,259 @@
             background: rgba(255,255,255,0.2);
         }
 
-        .content-grid {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
+        /* 动态输入区 */
+        .post-input-area {
+            max-width: 800px;
+            margin: 0 auto 30px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .column {
+        .post-textarea {
+            width: 100%;
+            min-height: 80px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            font-size: 15px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .post-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .post-textarea:focus {
+            outline: none;
+            border-color: rgba(224, 122, 95, 0.6);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .post-image-preview {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .preview-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .post-btn-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .post-img-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .post-img-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .post-submit-btn {
+            background: #e07a5f;
+            color: white;
+            border: none;
+            padding: 8px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .post-submit-btn:hover {
+            background: #d4694e;
+        }
+
+        .post-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 动态列表 */
+        .feed-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .feed-item {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 20px;
+        }
+
+        .feed-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .feed-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e07a5f, #f4a261);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .feed-meta {
+            flex: 1;
+        }
+
+        .feed-author {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .feed-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .feed-delete-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+        }
+
+        .feed-delete-btn:hover {
+            color: #ff4444;
+        }
+
+        .feed-content {
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 14px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .feed-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 8px;
+        }
+
+        .feed-images.single {
+            grid-template-columns: 1fr;
+            max-width: 400px;
+        }
+
+        .feed-images img {
+            width: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .feed-images img:hover {
+            transform: scale(1.02);
+        }
+
+        .feed-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .feed-empty div {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        /* 图片查看弹窗 */
+        .image-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-modal-overlay.show {
+            display: flex;
+        }
+
+        .image-modal-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+
+        /* ========== 心得页面（保留） ========== */
+        .xinde-section {
+            display: none;
+            min-height: 100vh;
+            background: url('bg-deer.jpg') center/cover no-repeat fixed;
+            color: white;
+            padding: 60px 40px;
+            position: relative;
+        }
+
+        .xinde-section::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(40, 30, 20, 0.88);
+            z-index: 0;
+        }
+
+        .xinde-section > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .xinde-section.active {
+            display: block;
+        }
+
+        .xinde-grid {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .xinde-column {
             background: rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(20px);
             border-radius: 16px;
@@ -170,7 +414,7 @@
             flex-direction: column;
         }
 
-        .column-header {
+        .xinde-column-header {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -179,15 +423,15 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .column-icon { font-size: 24px; }
+        .xinde-column-icon { font-size: 24px; }
 
-        .column-title {
+        .xinde-column-title {
             font-size: 16px;
             font-weight: 600;
             flex: 1;
         }
 
-        .column-count {
+        .xinde-column-count {
             background: rgba(224, 122, 95, 0.9);
             color: white;
             padding: 4px 12px;
@@ -455,7 +699,7 @@
         .english-section {
             display: none;
             min-height: 100vh;
-            background: url('bg-deer-compressed.jpg') center/cover no-repeat fixed;
+            background: url('bg-deer.jpg') center/cover no-repeat fixed;
             color: white;
             position: relative;
         }
@@ -666,15 +910,11 @@
         .toast.error { background: #ff4444; }
 
         /* 响应式 */
-        @media (max-width: 1024px) {
-            .content-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
         @media (max-width: 768px) {
             .home-title { font-size: 42px; letter-spacing: 6px; }
             .home-quote { font-size: 14px; }
-            .content-grid { grid-template-columns: 1fr; }
-            .page-section { padding: 40px 20px; }
+            .page-section, .xinde-section { padding: 40px 20px; }
+            .feed-images { grid-template-columns: repeat(2, 1fr); }
             .chat-messages, .chat-input-area { padding: 20px; }
         }
     </style>
@@ -687,7 +927,10 @@
             <h1 class="home-title">黑狗天地</h1>
             <p class="home-quote">莫为逐光，燃尽了自己，忘了为何出发。</p>
             <div class="home-icons">
-                <a class="home-icon" onclick="showPage('materials')" title="资料心得">
+                <a class="home-icon" onclick="showPage('feed')" title="动态">
+                    <i class="fas fa-stream"></i>
+                </a>
+                <a class="home-icon" onclick="showPage('xinde')" title="心得">
                     <i class="fas fa-pen"></i>
                 </a>
                 <a class="home-icon" onclick="showPage('english')" title="英语角">
@@ -697,62 +940,53 @@
         </div>
     </section>
 
-    <!-- ========== 资料心得页面 ========== -->
-    <section class="page-section" id="materialsSection">
+    <!-- ========== 动态页面 ========== -->
+    <section class="page-section" id="feedSection">
         <div class="page-header">
-            <h2>📚 资料心得</h2>
+            <h2>📖 动态</h2>
             <button class="back-btn" onclick="showPage('home')">
                 <i class="fas fa-arrow-left"></i> 返回
             </button>
         </div>
-        <div class="content-grid">
-            <div class="column" id="gaoyi">
-                <div class="column-header">
-                    <span class="column-icon">📖</span>
-                    <span class="column-title">我的备课</span>
-                    <span class="column-count" id="count-gaoyi-shijuan">0</span>
-                </div>
-                <div class="file-list-container">
-                    <ul class="file-list" id="list-gaoyi-shijuan"></ul>
-                </div>
-                <div class="empty-state" id="empty-gaoyi-shijuan">
-                    <div>📝</div>
-                    <p>暂无文件</p>
-                </div>
-            </div>
-            <div class="column" id="gaoer">
-                <div class="column-header">
-                    <span class="column-icon">📖</span>
-                    <span class="column-title">高二试卷</span>
-                    <span class="column-count" id="count-gaoer-shijuan">0</span>
-                </div>
-                <div class="file-list-container">
-                    <ul class="file-list" id="list-gaoer-shijuan"></ul>
-                </div>
-                <div class="empty-state" id="empty-gaoer-shijuan">
-                    <div>📝</div>
-                    <p>暂无文件</p>
+
+        <!-- 发布动态 -->
+        <div class="post-input-area">
+            <textarea class="post-textarea" id="postText" placeholder="记录点什么..."></textarea>
+            <div class="post-actions">
+                <div class="post-image-preview" id="postImagePreview"></div>
+                <div class="post-btn-group">
+                    <button class="post-img-btn" onclick="document.getElementById('postImageInput').click()">
+                        <i class="fas fa-image"></i> 图片
+                    </button>
+                    <input type="file" id="postImageInput" accept="image/*" multiple style="display:none" onchange="handlePostImages(event)">
+                    <button class="post-submit-btn" id="postSubmitBtn" onclick="submitPost()">发布</button>
                 </div>
             </div>
-            <div class="column" id="gaosan">
-                <div class="column-header">
-                    <span class="column-icon">📖</span>
-                    <span class="column-title">高三试卷</span>
-                    <span class="column-count" id="count-gaosan-shijuan">0</span>
-                </div>
-                <div class="file-list-container">
-                    <ul class="file-list" id="list-gaosan-shijuan"></ul>
-                </div>
-                <div class="empty-state" id="empty-gaosan-shijuan">
-                    <div>📝</div>
-                    <p>暂无文件</p>
-                </div>
+        </div>
+
+        <!-- 动态列表 -->
+        <div class="feed-container" id="feedContainer">
+            <div class="feed-empty" id="feedEmpty">
+                <div>📝</div>
+                <p>还没有动态，写第一条吧</p>
             </div>
-            <div class="column" id="xinde">
-                <div class="column-header">
-                    <span class="column-icon">✍️</span>
-                    <span class="column-title">心得</span>
-                    <span class="column-count" id="count-xinde">0</span>
+        </div>
+    </section>
+
+    <!-- ========== 心得页面 ========== -->
+    <section class="xinde-section" id="xindeSection">
+        <div class="page-header">
+            <h2>✍️ 心得</h2>
+            <button class="back-btn" onclick="showPage('home')">
+                <i class="fas fa-arrow-left"></i> 返回
+            </button>
+        </div>
+        <div class="xinde-grid">
+            <div class="xinde-column" id="xinde">
+                <div class="xinde-column-header">
+                    <span class="xinde-column-icon">✍️</span>
+                    <span class="xinde-column-title">心得</span>
+                    <span class="xinde-column-count" id="count-xinde">0</span>
                 </div>
                 <div class="file-list-container">
                     <ul class="file-list" id="list-xinde"></ul>
@@ -780,13 +1014,12 @@
         </div>
         <div class="chat-input-area">
             <button class="voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="语音输入">🎤</button>
-            <!-- 隐藏文字输入和发送按钮，只保留语音 -->
             <input type="text" class="chat-input" id="chatInput" placeholder="输入英语或中文，和 AI 老师对话..." onkeypress="if(event.key==='Enter') sendChatMessage()" style="display:none;">
             <button class="chat-send-btn" onclick="sendChatMessage()" style="display:none;">发送</button>
         </div>
     </section>
 
-    <!-- ========== 上传按钮 ========== -->
+    <!-- ========== 上传按钮（心得页面用） ========== -->
     <button class="upload-trigger-btn" onclick="openModal()" title="上传文件" id="uploadBtn" style="display:none;">D</button>
 
     <!-- ========== 上传弹窗 ========== -->
@@ -848,6 +1081,11 @@
         </div>
     </div>
 
+    <!-- ========== 图片查看弹窗 ========== -->
+    <div class="image-modal-overlay" id="imageModalOverlay" onclick="closeImageModal()">
+        <img id="imageModalImg" src="" alt="">
+    </div>
+
     <!-- ========== Toast ========== -->
     <div class="toast" id="toast"></div>
 
@@ -857,24 +1095,177 @@
         let files = [];
         let selectedFile = null;
         let currentPage = 'home';
+        let postImages = [];
 
         // 页面切换
         function showPage(page) {
             currentPage = page;
             document.getElementById('homeSection').style.display = page === 'home' ? 'flex' : 'none';
-            document.getElementById('materialsSection').classList.toggle('active', page === 'materials');
+            document.getElementById('feedSection').classList.toggle('active', page === 'feed');
+            document.getElementById('xindeSection').classList.toggle('active', page === 'xinde');
             document.getElementById('englishSection').classList.toggle('active', page === 'english');
-            document.getElementById('uploadBtn').style.display = page === 'materials' ? 'flex' : 'none';
+            document.getElementById('uploadBtn').style.display = page === 'xinde' ? 'flex' : 'none';
 
-            if (page === 'materials') {
-                init();
+            if (page === 'xinde') {
+                initXinde();
+            } else if (page === 'feed') {
+                renderFeed();
             }
             window.scrollTo(0, 0);
         }
 
-        async function init() {
+        // ========== 动态功能 ==========
+        function handlePostImages(event) {
+            const files = Array.from(event.target.files);
+            const preview = document.getElementById('postImagePreview');
+
+            files.forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+                if (postImages.length >= 9) {
+                    showToast('最多上传9张图片', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    postImages.push({
+                        file: file,
+                        dataUrl: e.target.result
+                    });
+                    renderPostPreview();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderPostPreview() {
+            const preview = document.getElementById('postImagePreview');
+            preview.innerHTML = postImages.map((img, i) => `
+                <img src="${img.dataUrl}" class="preview-thumb" onclick="removePostImage(${i})">
+            `).join('');
+        }
+
+        function removePostImage(index) {
+            postImages.splice(index, 1);
+            renderPostPreview();
+        }
+
+        async function submitPost() {
+            const text = document.getElementById('postText').value.trim();
+            if (!text && postImages.length === 0) {
+                showToast('写点什么或选张图吧', 'error');
+                return;
+            }
+
+            const btn = document.getElementById('postSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = '发布中...';
+
+            try {
+                // 上传图片到 COS
+                const imageUrls = [];
+                for (const img of postImages) {
+                    const formData = new FormData();
+                    formData.append('file', img.file);
+                    formData.append('grade', '动态');
+                    formData.append('type', '图片');
+
+                    const res = await fetch(`${API_BASE_URL}/api/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        // 构造图片URL
+                        imageUrls.push(`${API_BASE_URL}/api/download?key=${encodeURIComponent(data.key || '')}`);
+                    }
+                }
+
+                // 保存动态到 localStorage
+                const posts = JSON.parse(localStorage.getItem('heigou_posts') || '[]');
+                posts.unshift({
+                    id: Date.now(),
+                    text: text,
+                    images: imageUrls,
+                    time: new Date().toISOString()
+                });
+                localStorage.setItem('heigou_posts', JSON.stringify(posts));
+
+                // 清空输入
+                document.getElementById('postText').value = '';
+                postImages = [];
+                renderPostPreview();
+                renderFeed();
+                showToast('发布成功', 'success');
+            } catch (error) {
+                showToast('发布失败: ' + error.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '发布';
+            }
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feedContainer');
+            const posts = JSON.parse(localStorage.getItem('heigou_posts') || '[]');
+
+            if (posts.length === 0) {
+                container.innerHTML = `
+                    <div class="feed-empty">
+                        <div>📝</div>
+                        <p>还没有动态，写第一条吧</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = posts.map(post => {
+                const date = new Date(post.time);
+                const timeStr = `${date.getMonth()+1}月${date.getDate()}日 ${String(date.getHours()).padStart(2,'0')}:${String(date.getMinutes()).padStart(2,'0')}`;
+                const imgClass = post.images && post.images.length === 1 ? 'single' : '';
+                const imagesHtml = post.images && post.images.length > 0
+                    ? `<div class="feed-images ${imgClass}">${post.images.map(url => `<img src="${url}" onclick="openImageModal('${url}')">`).join('')}</div>`
+                    : '';
+
+                return `
+                    <div class="feed-item">
+                        <div class="feed-header">
+                            <div class="feed-avatar">🐕</div>
+                            <div class="feed-meta">
+                                <div class="feed-author">黑狗</div>
+                                <div class="feed-time">${timeStr}</div>
+                            </div>
+                            <button class="feed-delete-btn" onclick="deletePost(${post.id})">🗑️</button>
+                        </div>
+                        ${post.text ? `<div class="feed-content">${escapeHtml(post.text)}</div>` : ''}
+                        ${imagesHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function deletePost(id) {
+            if (!confirm('确定删除这条动态？')) return;
+            let posts = JSON.parse(localStorage.getItem('heigou_posts') || '[]');
+            posts = posts.filter(p => p.id !== id);
+            localStorage.setItem('heigou_posts', JSON.stringify(posts));
+            renderFeed();
+            showToast('已删除', 'success');
+        }
+
+        function openImageModal(url) {
+            document.getElementById('imageModalImg').src = url;
+            document.getElementById('imageModalOverlay').classList.add('show');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModalOverlay').classList.remove('show');
+        }
+
+        // ========== 心得功能 ==========
+        async function initXinde() {
             await loadFiles();
-            renderAllLists();
+            renderXindeList();
         }
 
         async function loadFiles() {
@@ -890,7 +1281,53 @@
             }
         }
 
-        // 上传弹窗
+        function renderXindeList() {
+            const listEl = document.getElementById('list-xinde');
+            const emptyEl = document.getElementById('empty-xinde');
+            const countEl = document.getElementById('count-xinde');
+
+            const xindeFiles = files.filter(f => f.category === 'xinde');
+            countEl.textContent = xindeFiles.length;
+
+            if (xindeFiles.length === 0) {
+                listEl.innerHTML = '';
+                emptyEl.style.display = 'block';
+                return;
+            }
+
+            emptyEl.style.display = 'none';
+            listEl.innerHTML = '';
+            fileInfoMap.clear();
+
+            xindeFiles.forEach(file => {
+                const displayName = removeExtension(file.name);
+                fileInfoMap.set(file.cosKey, {
+                    url: file.cosUrl,
+                    key: file.cosKey,
+                    name: file.name,
+                    isXinde: true
+                });
+
+                const li = document.createElement('li');
+                li.className = 'file-item';
+                li.innerHTML = `
+                    <button class="delete-btn" data-key="${file.cosKey}">×</button>
+                    <div class="file-name">${escapeHtml(displayName)}</div>
+                    <div class="file-meta">${file.size} · ${file.date}</div>
+                `;
+
+                const fileKey = file.cosKey;
+                li.querySelector('.file-name').addEventListener('click', () => handleFileClick(fileKey));
+                li.querySelector('.delete-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteFile(fileKey, file.name);
+                });
+
+                listEl.appendChild(li);
+            });
+        }
+
+        // ========== 上传弹窗 ==========
         function openModal() {
             document.getElementById('modalOverlay').classList.add('show');
             resetForm();
@@ -993,7 +1430,7 @@
                     if (data.success) {
                         showToast('上传成功！', 'success');
                         await loadFiles();
-                        renderAllLists();
+                        renderXindeList();
                         setTimeout(closeModal, 500);
                     } else {
                         showToast('上传失败：' + data.error, 'error');
@@ -1018,14 +1455,9 @@
             }
         }
 
-        // 下载相关
+        // ========== 下载相关 ==========
         function doDownload(url, filename) {
-            console.log('doDownload called with url:', url, 'filename:', filename);
-            
-            // URL 已经是编码过的，不要再次编码
             const finalUrl = url;
-            
-            // 使用 form 提交下载
             const form = document.createElement('form');
             form.method = 'GET';
             form.action = finalUrl;
@@ -1033,7 +1465,6 @@
             document.body.appendChild(form);
             form.submit();
             document.body.removeChild(form);
-            
             showToast('开始下载...', 'success');
         }
 
@@ -1064,16 +1495,11 @@
             fetch(`${API_BASE_URL}/api/download?key=${encodeURIComponent(pendingDownloadUrl)}&password=${encodeURIComponent(inputPassword)}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Download API response:', data);
                     if (data.success) {
-                        // 先保存文件名，再关闭弹窗（关闭弹窗会清空变量）
                         const filename = pendingDownloadFilename;
                         closePasswordModal();
                         if (filename) {
-                            console.log('Calling doDownload with url:', data.url, 'filename:', filename);
                             doDownload(data.url, filename);
-                        } else {
-                            console.log('No pendingDownloadFilename');
                         }
                     } else {
                         showToast('密码错误', 'error');
@@ -1106,72 +1532,7 @@
         function handleFileClick(fileKey) {
             const fileInfo = fileInfoMap.get(fileKey);
             if (!fileInfo) return;
-
-            if (fileInfo.isXinde) {
-                openPasswordModal(fileInfo.key, fileInfo.name);
-            } else {
-                doDownload(fileInfo.url, fileInfo.name);
-            }
-        }
-
-        function renderAllLists() {
-            const categories = [
-                { key: 'gaoyi-shijuan', title: '高一试卷' },
-                { key: 'gaoer-shijuan', title: '高二试卷' },
-                { key: 'gaosan-shijuan', title: '高三试卷' },
-                { key: 'xinde', title: '心得' }
-            ];
-
-            categories.forEach(cat => {
-                const listEl = document.getElementById(`list-${cat.key}`);
-                const emptyEl = document.getElementById(`empty-${cat.key}`);
-                const countEl = document.getElementById(`count-${cat.key}`);
-
-                if (listEl && emptyEl && countEl) {
-                    const catFiles = files.filter(f => f.category === cat.key);
-                    countEl.textContent = catFiles.length;
-
-                    if (catFiles.length === 0) {
-                        listEl.innerHTML = '';
-                        emptyEl.style.display = 'block';
-                    } else {
-                        emptyEl.style.display = 'none';
-                        const isXinde = cat.key === 'xinde';
-                        listEl.innerHTML = '';
-
-                        catFiles.forEach(file => {
-                            fileInfoMap.delete(file.cosKey);
-                        });
-
-                        catFiles.forEach(file => {
-                            const displayName = removeExtension(file.name);
-                            fileInfoMap.set(file.cosKey, {
-                                url: file.cosUrl,
-                                key: file.cosKey,
-                                name: file.name,
-                                isXinde: isXinde
-                            });
-
-                            const li = document.createElement('li');
-                            li.className = 'file-item';
-                            li.innerHTML = `
-                                <button class="delete-btn" data-key="${file.cosKey}">×</button>
-                                <div class="file-name">${escapeHtml(displayName)}</div>
-                                <div class="file-meta">${file.size} · ${file.date}</div>
-                            `;
-
-                            const fileKey = file.cosKey;
-                            li.querySelector('.file-name').addEventListener('click', () => handleFileClick(fileKey));
-                            li.querySelector('.delete-btn').addEventListener('click', (e) => {
-                                e.stopPropagation();
-                                deleteFile(fileKey, file.name);
-                            });
-
-                            listEl.appendChild(li);
-                        });
-                    }
-                }
-            });
+            openPasswordModal(fileInfo.key, fileInfo.name);
         }
 
         async function deleteFile(key, name) {
@@ -1188,7 +1549,7 @@
                 if (data.success) {
                     showToast('删除成功！', 'success');
                     await loadFiles();
-                    renderAllLists();
+                    renderXindeList();
                 } else {
                     showToast('删除失败：' + data.error, 'error');
                 }
@@ -1222,10 +1583,8 @@
             div.className = `chat-message ${isUser ? 'user-message' : 'ai-message'}`;
 
             if (isUser) {
-                // 用户消息直接显示
                 div.innerHTML = `<div class="message-bubble">${escapeHtml(text)}</div>`;
             } else {
-                // AI 消息默认隐藏文字，只显示语音按钮和"显示文字"按钮
                 const messageId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
                 div.innerHTML = `
                     <div class="message-bubble" id="${messageId}" style="display:none;">${escapeHtml(text)}</div>
@@ -1296,7 +1655,6 @@
             }
         }
 
-        // 语音播放
         function speakText(text) {
             if (!window.speechSynthesis) return;
             window.speechSynthesis.cancel();
@@ -1308,7 +1666,6 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // 语音输入
         let recognition = null;
         let isRecording = false;
         let finalTranscript = '';
@@ -1322,11 +1679,9 @@
 
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
-            // 强制英文识别（口语练习）
             recognition.lang = 'en-US';
             recognition.continuous = true;
             recognition.interimResults = true;
-            // iPad Safari 需要设置 maxAlternatives 来获取更准确的结果
             recognition.maxAlternatives = 1;
 
             recognition.onstart = () => {
@@ -1345,39 +1700,35 @@
 
             recognition.onresult = (event) => {
                 let interimTranscript = '';
-                
+
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     const transcript = event.results[i][0].transcript;
-                    // 检测是否是中文（简单检测中文字符）
                     const hasChinese = /[\u4e00-\u9fa5]/.test(transcript);
-                    
+
                     if (hasChinese) {
-                        // 如果识别出中文，可能是语言设置没生效，提示用户
                         showToast('Please speak English', 'error');
                         document.getElementById('chatInput').placeholder = 'Please speak English...';
                         return;
                     }
-                    
+
                     if (event.results[i].isFinal) {
                         finalTranscript += transcript;
                     } else {
                         interimTranscript += transcript;
                     }
                 }
-                
-                // 显示识别中的文字，让小孩看到识别到了什么
+
                 document.getElementById('chatInput').value = finalTranscript + interimTranscript;
             };
 
             recognition.onerror = (event) => {
                 console.error('语音识别错误:', event.error);
-                
+
                 if (event.error === 'not-allowed') {
                     showToast('请允许使用麦克风权限', 'error');
                     isRecording = false;
                     document.getElementById('voiceBtn').classList.remove('recording');
                 } else if (event.error === 'no-speech') {
-                    // 没检测到语音，只是提示，不停止录音
                     showToast('没有检测到语音，请靠近麦克风说话', 'error');
                 } else if (event.error === 'network') {
                     showToast('网络错误，请检查网络后重试', 'error');
@@ -1395,21 +1746,18 @@
             if (!recognition) initVoiceInput();
 
             if (isRecording) {
-                // 停止录音
                 recognition.stop();
-                
-                // 等待语音识别完成，然后自动发送
+
                 setTimeout(() => {
                     const text = document.getElementById('chatInput').value.trim();
                     if (text) {
                         sendChatMessage();
-                        // 发送后清空输入框
                         document.getElementById('chatInput').value = '';
                         finalTranscript = '';
                     } else {
                         showToast('没有识别到语音，请重试', 'error');
                     }
-                }, 500); // 给语音识别一点时间完成
+                }, 500);
             } else {
                 navigator.mediaDevices.getUserMedia({ audio: true })
                     .then(() => {
@@ -1422,17 +1770,9 @@
 
         initVoiceInput();
 
-        // 弹窗点击外部关闭
         document.getElementById('modalOverlay').addEventListener('click', function(e) {
             if (e.target === document.getElementById('modalOverlay')) closeModal();
         });
-
-        // 注册 Service Worker（PWA）- 临时禁用，解决缓存问题
-        // if ('serviceWorker' in navigator) {
-        //     navigator.serviceWorker.register('sw.js')
-        //         .then((reg) => console.log('SW registered:', reg.scope))
-        //         .catch((err) => console.log('SW registration failed:', err));
-        // }
     </script>
 </body>
 </html>
