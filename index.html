@@ -1179,9 +1179,9 @@
                         body: formData
                     });
                     const data = await res.json();
-                    if (data.success) {
-                        // 构造图片URL
-                        imageUrls.push(`${API_BASE_URL}/api/download?key=${encodeURIComponent(data.key || '')}`);
+                    if (data.success && data.url) {
+                        // 直接使用 COS 公共访问 URL
+                        imageUrls.push(data.url);
                     }
                 }
 

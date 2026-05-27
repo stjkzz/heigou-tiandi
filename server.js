@@ -86,8 +86,8 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
             return res.status(400).json({ success: false, error: '没有文件' });
         }
         
-        const gradeKey = { '高一': 'gaoyi', '高二': 'gaoer', '高三': 'gaosan' }[grade];
-        const typeKey = type === '心得' ? 'xinde' : 'shijuan';
+        const gradeKey = { '高一': 'gaoyi', '高二': 'gaoer', '高三': 'gaosan', '动态': 'feed' }[grade] || grade;
+        const typeKey = type === '心得' ? 'xinde' : type === '图片' ? 'images' : 'shijuan';
         // 使用 Buffer 正确处理中文文件名
         const originalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
         const fileKey = `${gradeKey}/${typeKey}/${Date.now()}_${originalName}`;
@@ -99,7 +99,11 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
             Body: file.buffer
         });
         
-        res.json({ success: true, message: '上传成功' });
+        // 生成公共访问 URL
+        const encodedFileKey = fileKey.split('/').map(part => encodeURIComponent(part)).join('/');
+        const publicUrl = `https://${BUCKET}.cos.${REGION}.myqcloud.com/${encodedFileKey}`;
+        
+        res.json({ success: true, message: '上传成功', url: publicUrl, key: fileKey });
     } catch (error) {
         console.error('上传失败:', error);
         res.status(500).json({ success: false, error: error.message });
