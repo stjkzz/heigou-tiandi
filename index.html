@@ -7,6 +7,10 @@
     <link rel="manifest" href="manifest.json">
     <title>黑狗天地</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- KaTeX 数学公式支持 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -951,7 +955,8 @@
 
         <!-- 发布动态 -->
         <div class="post-input-area">
-            <textarea class="post-textarea" id="postText" placeholder="记录点什么..."></textarea>
+            <textarea class="post-textarea" id="postText" placeholder="记录点什么... 支持数学公式：$E=mc^2$ 或 $$\\int_a^b f(x)dx$$" oninput="renderPostPreviewMath()"></textarea>
+            <div class="math-preview" id="mathPreview" style="display:none; margin-top:10px; padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; border:1px solid rgba(255,255,255,0.1);"></div>
             <div class="post-actions">
                 <div class="post-image-preview" id="postImagePreview"></div>
                 <div class="post-btn-group">
@@ -1145,6 +1150,37 @@
             `).join('');
         }
 
+        function renderPostPreviewMath() {
+            const text = document.getElementById('postText').value.trim();
+            const preview = document.getElementById('mathPreview');
+
+            if (!text || !window.katex) {
+                preview.style.display = 'none';
+                return;
+            }
+
+            // 检查是否包含公式标记
+            if (!text.includes('$')) {
+                preview.style.display = 'none';
+                return;
+            }
+
+            preview.style.display = 'block';
+            preview.innerHTML = '<div style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:8px;">公式预览：</div>' +
+                '<div class="feed-content">' + escapeHtml(text) + '</div>';
+
+            // 渲染公式
+            if (window.renderMathInElement) {
+                renderMathInElement(preview, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+        }
+
         function removePostImage(index) {
             postImages.splice(index, 1);
             renderPostPreview();
@@ -1267,6 +1303,17 @@
                         </div>
                     `;
                 }).join('');
+
+                // 渲染数学公式
+                if (window.renderMathInElement) {
+                    renderMathInElement(container, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false
+                    });
+                }
             } catch (error) {
                 container.innerHTML = `
                     <div class="feed-empty">
@@ -1818,6 +1865,24 @@
 
         document.getElementById('modalOverlay').addEventListener('click', function(e) {
             if (e.target === document.getElementById('modalOverlay')) closeModal();
+        });
+
+        // 初始化 KaTeX 公式渲染
+        document.addEventListener('DOMContentLoaded', function() {
+            // 如果 KaTeX 已加载，配置自动渲染
+            if (window.renderMathInElement) {
+                // 对已有的动态内容进行渲染
+                const feedContainer = document.getElementById('feedContainer');
+                if (feedContainer) {
+                    renderMathInElement(feedContainer, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false
+                    });
+                }
+            }
         });
     </script>
 </body>
